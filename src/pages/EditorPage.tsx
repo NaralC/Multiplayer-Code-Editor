@@ -1,11 +1,13 @@
-import React from 'react'
+import React from "react";
 
-type Props = {}
+type EditorPageProps = {};
 
-const EditorPage = (props: Props) => {
+const EditorPage = (props: EditorPageProps) => {
   return (
-    <div>EditorPage</div>
-  )
-}
+    <div className="w-screen min-h-screen bg-white flex flex-col justify-center items-center">
+      EditorPage
+    </div>
+  );
+};
 
 export default EditorPage;

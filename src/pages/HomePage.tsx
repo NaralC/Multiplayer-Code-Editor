@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useState } from "react";
+import { ChangeEvent, FC, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { FaLaptopCode } from "react-icons/fa";
@@ -7,10 +7,20 @@ import { v4 as uuidv4 } from "uuid";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import useKeyPress from "../hooks/useKeyPress";
+
 const HomePage: FC = () => {
   const navigate = useNavigate();
   const [nickname, setNickname] = useState<string>("");
   const [roomId, setRoomId] = useState<string>("");
+
+  const enterIsDown = useKeyPress("Enter");
+  const enterIsDownRef = useRef(false); // This makes the hook run only once
+
+  useEffect(() => {
+    if (enterIsDownRef.current) return;
+    enterIsDownRef.current = true;
+  }, [enterIsDown]);
 
   const createNewRoom = (): void => {
     const newId = uuidv4();
@@ -48,7 +58,6 @@ const HomePage: FC = () => {
     setTimeout(() => {
       // Send something to the backend here
 
-      
       navigate(`/editor/${roomId}`, {
         state: {
           nickname: nickname,
@@ -56,7 +65,6 @@ const HomePage: FC = () => {
         },
       });
     }, 1000);
-
   };
 
   return (
