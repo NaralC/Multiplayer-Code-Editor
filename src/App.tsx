@@ -6,10 +6,10 @@ import "./App.css";
 
 const App: FC = () => {
   return (
-    <div className="w-screen min-h-screen bg-white flex flex-col justify-center items-center">
+    <div className="">
       <Routes>
         <Route path="/" element={<HomePage />}/>
-        <Route path="/editor" element={<EditorPage />}/>
+        <Route path="/editor/:roomId" element={<EditorPage />}/>
       </Routes>
     </div>
   );
