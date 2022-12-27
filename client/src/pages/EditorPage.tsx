@@ -1,11 +1,25 @@
-import { FC, useState } from "react";
+import { FC, MutableRefObject, useEffect, useRef, useState } from "react";
+
 import Client from "../components/Client";
 import CodeEditor from "../components/CodeEditor";
 import { IClientProps } from "../constants/interfaces";
 import { defaultJS } from "../constants/defaultCode";
-import '../App.css'
+import "../App.css";
+
+import initSocket from "../socket/socket";
+import ACTIONS from "../constants/actions";
 
 const EditorPage: FC = () => {
+  const socketRef: MutableRefObject<any> = useRef();
+
+  useEffect(() => {
+    const init = async () => {
+      socketRef.current = await initSocket();
+      socketRef.current.emit(ACTIONS.JOIN);
+    };
+    init();
+  }, []);
+
   const [clients, setClients] = useState<IClientProps[]>([
     {
       socketId: 1,
@@ -51,7 +65,12 @@ const EditorPage: FC = () => {
       </div>
       <div className="h-screen basis-4/5 bg-white text-4xl">
         Code Editor
-        <CodeEditor defaultCode={defaultJS.defaultCode} language={defaultJS.language} onChange={defaultJS.onChange} theme={defaultJS.theme}/>
+        <CodeEditor
+          defaultCode={defaultJS.defaultCode}
+          language={defaultJS.language}
+          onChange={defaultJS.onChange}
+          theme={defaultJS.theme}
+        />
       </div>
     </div>
   );
