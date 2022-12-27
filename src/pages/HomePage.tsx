@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useEffect, useRef, useState } from "react";
+import { ChangeEvent, FC, useEffect, useId, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { FaLaptopCode } from "react-icons/fa";
@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import useKeyPress from "../hooks/useKeyPress";
+import '../App.css'
 
 const HomePage: FC = () => {
   const navigate = useNavigate();
@@ -68,7 +69,7 @@ const HomePage: FC = () => {
   };
 
   return (
-    <div className="w-screen min-h-screen bg-gray-600 flex flex-col justify-center items-center transition-all delay-75">
+    <div className="page-background">
       <div className="bg-white p-5 rounded-md flex flex-col gap-5 shadow-black shadow-md">
         <FaLaptopCode className="text-7xl mx-auto" />
         <div className="font-semibold mx-auto">

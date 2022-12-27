@@ -2,6 +2,8 @@ import { FC, useState } from "react";
 import Client from "../components/Client";
 import CodeEditor from "../components/CodeEditor";
 import { IClientProps } from "../constants/interfaces";
+import { defaultJS } from "../constants/defaultCode";
+import '../App.css'
 
 const EditorPage: FC = () => {
   const [clients, setClients] = useState<IClientProps[]>([
@@ -20,7 +22,7 @@ const EditorPage: FC = () => {
   ]);
 
   return (
-    <div className="w-screen min-h-screen bg-gray-600 flex flex-row justify-center items-center transition-all delay-75">
+    <div className="page-background">
       <div className="h-screen min-w-fit p-5 basis-1/5 bg-gray-300">
         <div className="text-4xl flex flex-col justify-around">
           Navbar
@@ -49,7 +51,7 @@ const EditorPage: FC = () => {
       </div>
       <div className="h-screen basis-4/5 bg-white text-4xl">
         Code Editor
-        {/* <CodeEditor /> */}
+        <CodeEditor defaultCode={defaultJS.defaultCode} language={defaultJS.language} onChange={defaultJS.onChange} theme={defaultJS.theme}/>
       </div>
     </div>
   );
