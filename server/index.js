@@ -6,7 +6,6 @@ const { Server } = require('socket.io');
 
 const server = http.createServer(app);
 const io = new Server(server);
-const port = 80;
 
 // app.use(cors());
 // app.use(express.json());
@@ -23,6 +22,6 @@ io.on('connection', (socket) => {
     console.log(socket.id);
 })
 
-server.listen(port, () => {
-    console.log(`Listening on port ${port}`)
+server.listen(80, () => {
+    console.log(`Listening on port 80`)
 })
