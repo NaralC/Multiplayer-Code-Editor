@@ -3,13 +3,13 @@ import { useEffect, useState } from "react";
 const useKeyPress = (inputKey: string): boolean => {
   const [keyPress, setKeyPress] = useState(false);
 
-  const handleUpstroke = ({ key }: any) => {
+  const handleUpstroke = ({ key }: KeyboardEvent) => {
     if (key === inputKey) {
       setKeyPress(false);
     }
   };
 
-  const handleDownstroke = ({ key }: any) => {
+  const handleDownstroke = ({ key }: KeyboardEvent) => {
     if (key === inputKey) {
       setKeyPress(true);
     }

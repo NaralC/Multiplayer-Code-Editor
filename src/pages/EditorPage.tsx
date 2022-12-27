@@ -1,11 +1,56 @@
-import React from "react";
+import { FC, useState } from "react";
+import Client from "../components/Client";
+import CodeEditor from "../components/CodeEditor";
+import { IClientProps } from "../constants/interfaces";
 
-type EditorPageProps = {};
+const EditorPage: FC = () => {
+  const [clients, setClients] = useState<IClientProps[]>([
+    {
+      socketId: 1,
+      nickname: "Mark Krit",
+    },
+    {
+      socketId: 2,
+      nickname: "Ice Wallow Come",
+    },
+    {
+      socketId: 3,
+      nickname: "Your Mom",
+    },
+  ]);
 
-const EditorPage = (props: EditorPageProps) => {
   return (
-    <div className="w-screen min-h-screen bg-white flex flex-col justify-center items-center">
-      EditorPage
+    <div className="w-screen min-h-screen bg-gray-600 flex flex-row justify-center items-center transition-all delay-75">
+      <div className="h-screen min-w-fit p-5 basis-1/5 bg-gray-300">
+        <div className="text-4xl flex flex-col justify-around">
+          Navbar
+          <div className="">
+            {clients.map((client, idx) => (
+              <Client
+                key={idx}
+                nickname={client.nickname}
+                socketId={client.socketId}
+              />
+            ))}
+          </div>
+          <button
+            type="button"
+            className="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+          >
+            Copy Room ID
+          </button>
+          <button
+            type="button"
+            className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+          >
+            Leave Room
+          </button>
+        </div>
+      </div>
+      <div className="h-screen basis-4/5 bg-white text-4xl">
+        Code Editor
+        {/* <CodeEditor /> */}
+      </div>
     </div>
   );
 };
