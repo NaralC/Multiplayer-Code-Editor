@@ -1,39 +1,75 @@
 import { FC, MutableRefObject, useEffect, useRef, useState } from "react";
-
 import Client from "../components/Client";
 import CodeEditor from "../components/CodeEditor";
+import ACTIONS from "../constants/actions";
 import { IClientProps } from "../constants/interfaces";
 import { defaultJS } from "../constants/defaultCode";
 import "../App.css";
 
 import initSocket from "../socket/socket";
-import ACTIONS from "../constants/actions";
+import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const EditorPage: FC = () => {
-  const socketRef: MutableRefObject<any> = useRef();
+  const navigate = useNavigate();
+  const { roomId } = useParams(); // Pull room id from url
+
+  const socketRef: MutableRefObject<any> = useRef(null);
+  const location: any = useLocation();
 
   useEffect(() => {
     const init = async () => {
       socketRef.current = await initSocket();
-      socketRef.current.emit(ACTIONS.JOIN);
+      socketRef.current.on('connect_error', (err: any) => handleErrors(err))
+      socketRef.current.on('connect_failed', (err: any) => handleErrors(err))
+
+      const handleErrors = (err: any): void => {
+        console.log('socket error 💀', err);
+        toast.error("Web socket connection failure lmao 👌", {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: "light",
+        });
+        
+        navigate('/')
+      } 
+
+      socketRef.current.emit(ACTIONS.JOIN, {
+        roomId,
+        nickname: location.state.nickname,
+      });
+
+      // Listen for joined events
+      socketRef.current.on(ACTIONS.JOINED, ({ clients, nickname, socketId }: any) => {
+        if (nickname !== location.state.nickname) {
+          toast.success(`${nickname} just joned the room!`, {
+            position: "top-right",
+            autoClose: 1000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            progress: undefined,
+            theme: "light",
+          });
+        }
+        setClients(clients);
+      })
     };
     init();
+    console.log(clients);
   }, []);
 
-  const [clients, setClients] = useState<IClientProps[]>([
-    {
-      socketId: 1,
-      nickname: "Mark Krit",
-    },
-    {
-      socketId: 2,
-      nickname: "Ice Wallow Come",
-    },
-    {
-      socketId: 3,
-      nickname: "Your Mom",
-    },
-  ]);
+  const [clients, setClients] = useState<IClientProps[]>([]);
+
+  if (!location.state) {
+    return <Navigate to='/'/>
+  }
 
   return (
     <div className="page-background">

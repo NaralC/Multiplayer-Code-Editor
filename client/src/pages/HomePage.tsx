@@ -62,7 +62,6 @@ const HomePage: FC = () => {
       navigate(`/editor/${roomId}`, {
         state: {
           nickname: nickname,
-          roomId: roomId,
         },
       });
     }, 1000);

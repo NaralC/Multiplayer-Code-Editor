@@ -6,7 +6,7 @@ const initSocket = async (): Promise<Socket<DefaultEventsMap, DefaultEventsMap>>
         'force new connection': true,
         reconnectionAttemp: 'Infinity',
         timeout: 10000,
-        transports: ['websockets'],
+        transports: ['websocket'],
     };
 
     return io('http://localhost:80/', options);
