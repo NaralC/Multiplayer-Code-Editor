@@ -18,10 +18,13 @@ import { Socket } from "socket.io-client";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
 
 const EditorPage: FC = () => {
-  const navigate = useNavigate();
+  const routerNavigator = useNavigate();
   const { roomId } = useParams(); // Pull room id from url
 
-  const socketRef: MutableRefObject<Socket<DefaultEventsMap, DefaultEventsMap> | null> = useRef(null);
+  const socketRef: MutableRefObject<Socket<
+    DefaultEventsMap,
+    DefaultEventsMap
+  > | null> = useRef(null);
   const location: any = useLocation();
 
   useEffect(() => {
@@ -34,7 +37,7 @@ const EditorPage: FC = () => {
         console.log("socket error 💀", err);
         toast.error("Web socket connection failure lmao 👌");
 
-        navigate("/");
+        routerNavigator("/");
       };
 
       socketRef.current.emit(ACTIONS.JOIN, {
@@ -69,10 +72,26 @@ const EditorPage: FC = () => {
       socketRef.current?.disconnect();
       socketRef.current?.off(ACTIONS.JOINED);
       socketRef.current?.off(ACTIONS.DISCONNECTED);
-    }
+    };
   }, []);
 
   const [clients, setClients] = useState<IClientProps[]>([]);
+
+  const copyToClipboard = async () => {
+    if (!roomId) {
+      toast.error("No room id? You shouldn't be here.");
+      return;
+    }
+    navigator.clipboard
+      .writeText(roomId)
+      .then(() => {
+        toast.success("Room id copied to your clipboard!");
+      })
+      .catch((err) => {
+        toast.error("Could not copy room Id");
+        console.log(err);
+      });
+  };
 
   if (!location.state) {
     return <Navigate to="/" />;
@@ -95,6 +114,7 @@ const EditorPage: FC = () => {
           <button
             type="button"
             className="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+            onClick={copyToClipboard}
           >
             Copy Room ID
           </button>
