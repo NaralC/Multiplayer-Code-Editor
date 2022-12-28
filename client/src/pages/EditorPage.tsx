@@ -7,37 +7,35 @@ import { defaultJS } from "../constants/defaultCode";
 import "../App.css";
 
 import initSocket from "../socket/socket";
-import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
+import {
+  Navigate,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import { toast } from "react-toastify";
+import { Socket } from "socket.io-client";
+import { DefaultEventsMap } from "socket.io/dist/typed-events";
 
 const EditorPage: FC = () => {
   const navigate = useNavigate();
   const { roomId } = useParams(); // Pull room id from url
 
-  const socketRef: MutableRefObject<any> = useRef(null);
+  const socketRef: MutableRefObject<Socket<DefaultEventsMap, DefaultEventsMap> | null> = useRef(null);
   const location: any = useLocation();
 
   useEffect(() => {
     const init = async () => {
       socketRef.current = await initSocket();
-      socketRef.current.on('connect_error', (err: any) => handleErrors(err))
-      socketRef.current.on('connect_failed', (err: any) => handleErrors(err))
+      socketRef.current.on("connect_error", (err: any) => handleErrors(err));
+      socketRef.current.on("connect_failed", (err: any) => handleErrors(err));
 
       const handleErrors = (err: any): void => {
-        console.log('socket error 💀', err);
-        toast.error("Web socket connection failure lmao 👌", {
-          position: "top-right",
-          autoClose: 1000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: "light",
-        });
-        
-        navigate('/')
-      } 
+        console.log("socket error 💀", err);
+        toast.error("Web socket connection failure lmao 👌");
+
+        navigate("/");
+      };
 
       socketRef.current.emit(ACTIONS.JOIN, {
         roomId,
@@ -45,30 +43,39 @@ const EditorPage: FC = () => {
       });
 
       // Listen for joined events
-      socketRef.current.on(ACTIONS.JOINED, ({ clients, nickname, socketId }: any) => {
-        if (nickname !== location.state.nickname) {
-          toast.success(`${nickname} just joned the room!`, {
-            position: "top-right",
-            autoClose: 1000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: false,
-            draggable: false,
-            progress: undefined,
-            theme: "light",
+      socketRef.current.on(
+        ACTIONS.JOINED,
+        ({ clients, nickname, socketId }: any) => {
+          if (nickname !== location.state.nickname) {
+            toast.success(`${nickname} just joned the room!`);
+          }
+          setClients(clients);
+        }
+      );
+
+      socketRef.current.on(
+        ACTIONS.DISCONNECTED,
+        ({ socketId, nickname }: any) => {
+          toast.success(`${nickname} left the room.`);
+          setClients((prev) => {
+            return prev.filter((client) => client.socketId !== socketId);
           });
         }
-        setClients(clients);
-      })
+      );
     };
     init();
-    console.log(clients);
+
+    return () => {
+      socketRef.current?.disconnect();
+      socketRef.current?.off(ACTIONS.JOINED);
+      socketRef.current?.off(ACTIONS.DISCONNECTED);
+    }
   }, []);
 
   const [clients, setClients] = useState<IClientProps[]>([]);
 
   if (!location.state) {
-    return <Navigate to='/'/>
+    return <Navigate to="/" />;
   }
 
   return (

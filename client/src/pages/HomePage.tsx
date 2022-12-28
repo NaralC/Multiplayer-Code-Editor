@@ -27,32 +27,14 @@ const HomePage: FC = () => {
     const newId = uuidv4();
     setRoomId(newId);
 
-    toast.success("Created new room", {
-      position: "top-right",
-      autoClose: 1000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: false,
-      progress: undefined,
-      theme: "light",
-    });
+    toast.success("Created new room");
   };
 
   const joinRoom = (e: ChangeEvent<any>): void | Promise<void> => {
     e.preventDefault();
 
     if (!nickname || !roomId) {
-      toast.error("Missing credentials", {
-        position: "top-right",
-        autoClose: 1000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: "light",
-      });
+      toast.error("Missing credentials");
       return;
     }
 
