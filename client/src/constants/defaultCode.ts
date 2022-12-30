@@ -1,6 +1,6 @@
-import { ICodeEditorProps } from "./interfaces";
+import { IMonacoEditorProps } from "./interfaces";
 
-export const defaultJS: ICodeEditorProps = {
+export const defaultJS: IMonacoEditorProps = {
     language: "javascript",
     defaultCode: "console.log(🤓🤓🤓)",
     theme: "monakai",
@@ -9,7 +9,7 @@ export const defaultJS: ICodeEditorProps = {
     },
 }
 
-export const defaultPy: ICodeEditorProps = {
+export const defaultPy: IMonacoEditorProps = {
     language: "python",
     defaultCode: "print(🤓🤓🤓)",
     theme: "monakai",

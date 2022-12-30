@@ -3,7 +3,7 @@ export interface IClientProps {
     nickname: string;
   };
 
-export interface ICodeEditorProps {
+export interface IMonacoEditorProps {
   onChange: () => void;
   language: string;
   defaultCode: string;

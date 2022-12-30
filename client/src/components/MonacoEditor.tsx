@@ -1,8 +1,8 @@
-import { FC, useState } from "react";
-import { ICodeEditorProps } from "../constants/interfaces";
+import { FC, useEffect, useState } from "react";
+import { IMonacoEditorProps } from "../constants/interfaces";
 import Editor from "@monaco-editor/react";
 
-const CodeEditor: FC<ICodeEditorProps> = (props) => {
+const MonacoEditor: FC<IMonacoEditorProps> = (props) => {
   const [code, setCode] = useState<string>(props.defaultCode || "");
 
   return (
@@ -20,4 +20,4 @@ const CodeEditor: FC<ICodeEditorProps> = (props) => {
   );
 };
 
-export default CodeEditor;
+export default MonacoEditor;
