@@ -52,6 +52,11 @@ io.on("connection", (socket) => {
         delete userSocketMap[socket.id];
         socket.leave();
     });
+
+    socket.on('code-change', ({ roomId, code }) => {
+        // console.log('receiving code!', code);
+        socket.in(roomId).emit('code-change', { code });
+    })
 });
 
 server.listen(80, () => {

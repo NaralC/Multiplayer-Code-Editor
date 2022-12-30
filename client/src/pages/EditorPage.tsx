@@ -1,6 +1,6 @@
 import { FC, MutableRefObject, useEffect, useRef, useState } from "react";
 import Client from "../components/Client";
-import CodeEditor from "../components/CodeEditor";
+import MonacoEditor from "../components/MonacoEditor";
 import ACTIONS from "../constants/actions";
 import { IClientProps } from "../constants/interfaces";
 import { defaultJS } from "../constants/defaultCode";
@@ -16,6 +16,7 @@ import {
 import { toast } from "react-toastify";
 import { Socket } from "socket.io-client";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
+import CodeMirrorEditor from "../components/CodeMirrorEditor";
 
 const EditorPage: FC = () => {
   const routerNavigator = useNavigate();
@@ -93,6 +94,10 @@ const EditorPage: FC = () => {
       });
   };
 
+  const leaveRoom = () => {
+    routerNavigator("/");
+  };
+
   if (!location.state) {
     return <Navigate to="/" />;
   }
@@ -121,6 +126,7 @@ const EditorPage: FC = () => {
           <button
             type="button"
             className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+            onClick={leaveRoom}
           >
             Leave Room
           </button>
@@ -128,12 +134,13 @@ const EditorPage: FC = () => {
       </div>
       <div className="h-screen basis-4/5 bg-white text-4xl">
         Code Editor
-        <CodeEditor
+        {/* <MonacoEditor
           defaultCode={defaultJS.defaultCode}
           language={defaultJS.language}
           onChange={defaultJS.onChange}
           theme={defaultJS.theme}
-        />
+        /> */}
+        <CodeMirrorEditor socketRef={socketRef} roomId={roomId}/>
       </div>
     </div>
   );
