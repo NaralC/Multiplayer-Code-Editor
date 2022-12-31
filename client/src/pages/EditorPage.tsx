@@ -29,6 +29,8 @@ const EditorPage: FC = () => {
   > | null> = useRef(null);
   const location: any = useLocation();
 
+  const effectRan = useRef<boolean>(false);
+
   useEffect(() => {
     const init = async () => {
       socketRef.current = await initSocket();
@@ -72,12 +74,13 @@ const EditorPage: FC = () => {
         }
       );
     };
-    init();
+    if (effectRan.current === false) { init(); }
 
     return () => {
       socketRef.current?.disconnect();
       socketRef.current?.off(ACTIONS.JOINED);
       socketRef.current?.off(ACTIONS.DISCONNECTED);
+      effectRan.current = true;
     };
   }, []);
 
