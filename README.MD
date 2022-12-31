@@ -12,7 +12,8 @@ Hey don't mind the fact that each connection comes with an extra socket 🥶 (fo
 3. npm start  
 
 ## Know Bugs
-- Everyone joins with an unused duplicated socket
+- ~~Everyone joins with an unused duplicated socket~~
+> The problem was in CodeMirrorEditor and EditorPage, there was no boolean key to prevent the duplicate pages in the code editor.
 - ~~Code doesn't automatically sync for late joiners~~
 > The problem was in CodeMirrorEditor, the onChangeCode sets to the default starting code - not the updated code.
 
