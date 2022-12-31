@@ -51,11 +51,14 @@ const EditorPage: FC = () => {
       socketRef.current.on(
         ACTIONS.JOINED,
         ({ clients, nickname, socketId }: any) => {
-          if (nickname !== location.state.nickname) {
-            toast.success(`${nickname} just joned the room!`);
+          if (nickname !== location.state?.nickname) {
+            toast.success(`${nickname} just joined the room!`);
           }
           setClients(clients);
-          socketRef.current?.emit(ACTIONS.SYNC_CODE, { code: codeRef.current, socketId });
+          socketRef.current?.emit(ACTIONS.SYNC_CODE, {
+            code: codeRef.current,
+            socketId,
+          });
         }
       );
 

@@ -22,13 +22,13 @@ interface ICodeMirrorEditorProps {
 const CodeMirrorEditor: FC<ICodeMirrorEditorProps> = ({ socketRef, roomId, onCodeChange }) => {
   const [code, setCode] = useState<string>('console.log("hello world")')
 
-  const onChange = useCallback((value: string, viewUpdate: ViewUpdate) => {
-    console.log(value);
+  const onChange = useCallback((newCode: string, viewUpdate: ViewUpdate) => {
+    // console.log(value);
     socketRef.current?.emit(ACTIONS.CODE_CHANGE, {
       roomId,
-      code: value,
+      code: newCode,
     });
-    onCodeChange(code);
+    onCodeChange(newCode);
   }, []);
 
   useEffect(() => {
@@ -40,10 +40,14 @@ const CodeMirrorEditor: FC<ICodeMirrorEditorProps> = ({ socketRef, roomId, onCod
         }
       });
     }
+
+    return () => {
+      socketRef.current?.off(ACTIONS.CODE_CHANGE);
+    }
   }, [socketRef.current]);
 
+
   return (
-    <div>
       <CodeMirror
         value={code}
         height="200px"
@@ -51,7 +55,6 @@ const CodeMirrorEditor: FC<ICodeMirrorEditorProps> = ({ socketRef, roomId, onCod
         onChange={onChange}
         theme={okaidia}
       />
-    </div>
   );
 };
 

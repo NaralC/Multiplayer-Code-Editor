@@ -26,7 +26,6 @@ const getAllConnectedClients = (roomId) => {
 }
 
 io.on("connection", (socket) => {
-    console.log(socket);
     socket.on('join', ({ roomId, nickname }) => {
         userSocketMap[socket.id] = nickname;
         socket.join(roomId);

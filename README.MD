@@ -13,6 +13,8 @@ Hey don't mind the fact that each connection comes with an extra socket 🥶 (fo
 
 ## Know Bugs
 - Everyone joins with an unused duplicated socket
-- Code doesn't automatically sync for late joiners
+- ~~Code doesn't automatically sync for late joiners~~
+> The problem was in CodeMirrorEditor, the onChangeCode sets to the default starting code - not the updated code.
+
 - If the host disconnects, the room dies
 - Fast typing glitches out the code editor
