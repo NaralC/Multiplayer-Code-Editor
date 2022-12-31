@@ -12,6 +12,7 @@ Hey don't mind the fact that each connection comes with an extra socket 🥶 (fo
 3. npm start  
 
 ## Know Bugs
+- Everyone joins with an unused duplicated socket
 - Code doesn't automatically sync for late joiners
 - If the host disconnects, the room dies
 - Fast typing glitches out the code editor
