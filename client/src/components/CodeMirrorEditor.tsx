@@ -34,10 +34,8 @@ const CodeMirrorEditor: FC<ICodeMirrorEditorProps> = ({ socketRef, roomId, onCod
   const effectRan = useRef<boolean>(false)
 
   useEffect(() => {
-      console.log('True is working')
       if (socketRef.current) {
         socketRef.current?.on(ACTIONS.CODE_CHANGE, ({ code }) => {
-          console.log('receiving')
           if (code !== null) {
             setCode(code);
           }
@@ -47,7 +45,6 @@ const CodeMirrorEditor: FC<ICodeMirrorEditorProps> = ({ socketRef, roomId, onCod
     return () => {
       socketRef.current?.off(ACTIONS.CODE_CHANGE);
       effectRan.current = true;
-      console.log('Working.')
     }
   }, [socketRef.current]);
 
