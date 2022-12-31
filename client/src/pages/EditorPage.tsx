@@ -19,6 +19,7 @@ import { DefaultEventsMap } from "socket.io/dist/typed-events";
 import CodeMirrorEditor from "../components/CodeMirrorEditor";
 
 const EditorPage: FC = () => {
+  const codeRef = useRef(null);
   const routerNavigator = useNavigate();
   const { roomId } = useParams(); // Pull room id from url
 
@@ -54,6 +55,7 @@ const EditorPage: FC = () => {
             toast.success(`${nickname} just joned the room!`);
           }
           setClients(clients);
+          socketRef.current?.emit(ACTIONS.SYNC_CODE, { code: codeRef.current, socketId });
         }
       );
 
@@ -140,7 +142,13 @@ const EditorPage: FC = () => {
           onChange={defaultJS.onChange}
           theme={defaultJS.theme}
         /> */}
-        <CodeMirrorEditor socketRef={socketRef} roomId={roomId}/>
+        <CodeMirrorEditor
+          socketRef={socketRef}
+          roomId={roomId}
+          onCodeChange={(code) => {
+            codeRef.current = code;
+          }}
+        />
       </div>
     </div>
   );

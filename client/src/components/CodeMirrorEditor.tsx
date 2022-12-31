@@ -16,9 +16,10 @@ interface ICodeMirrorEditorProps {
     DefaultEventsMap
   > | null>;
   roomId: string | undefined;
+  onCodeChange: (code: any) => void;
 }
 
-const CodeMirrorEditor: FC<ICodeMirrorEditorProps> = ({ socketRef, roomId }) => {
+const CodeMirrorEditor: FC<ICodeMirrorEditorProps> = ({ socketRef, roomId, onCodeChange }) => {
   const [code, setCode] = useState<string>('console.log("hello world")')
 
   const onChange = useCallback((value: string, viewUpdate: ViewUpdate) => {
@@ -27,6 +28,7 @@ const CodeMirrorEditor: FC<ICodeMirrorEditorProps> = ({ socketRef, roomId }) => 
       roomId,
       code: value,
     });
+    onCodeChange(code);
   }, []);
 
   useEffect(() => {
@@ -47,6 +49,7 @@ const CodeMirrorEditor: FC<ICodeMirrorEditorProps> = ({ socketRef, roomId }) => 
         height="200px"
         extensions={[javascript({ jsx: true })]}
         onChange={onChange}
+        theme={okaidia}
       />
     </div>
   );

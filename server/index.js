@@ -57,6 +57,11 @@ io.on("connection", (socket) => {
         // console.log('receiving code!', code);
         socket.in(roomId).emit('code-change', { code });
     })
+
+    socket.on('sync-code', ({ socketId, code }) => {
+        // console.log('syncing code!', code);
+        io.to(socketId).emit('code-change', { code });
+    })
 });
 
 server.listen(80, () => {
