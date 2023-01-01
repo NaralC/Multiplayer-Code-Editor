@@ -49,9 +49,30 @@ const HomePage: FC = () => {
     }, 1000);
   };
 
+  // For initial page load animation
+  const [isShowing, setIsShowing] = useState<boolean>(false);
+  const effectRan = useRef<boolean>(false);
+  useEffect(() => {
+    if (effectRan.current === false) {
+      setIsShowing(true);
+    }
+    return () => {
+      effectRan.current = true;
+    };
+  });
+
   return (
     <div className="page-background">
-        <div className="bg-white p-5 rounded-md flex flex-col gap-5 shadow-black shadow-md">
+      <Transition
+        show={isShowing}
+        enter="transition duration-500"
+        enterFrom="opacity-0 scale-50"
+        enterTo="opacity-100 scale-100"
+        leave="transition duration-150"
+        leaveFrom="opacity-100"
+        leaveTo="opacity-0"
+      >
+        <div className="bg-white p-5 rounded-md flex flex-col gap-5 shadow-black shadow-md duration">
           <FaLaptopCode className="text-7xl mx-auto" />
           <div className="font-semibold mx-auto">
             Code Crush — Multiplayer Code Editor
@@ -106,6 +127,7 @@ const HomePage: FC = () => {
             If you don't have a room ID, click here to generate one.
           </div>
         </div>
+      </Transition>
     </div>
   );
 };
