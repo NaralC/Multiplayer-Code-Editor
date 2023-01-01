@@ -103,7 +103,7 @@ const HomePage: FC = () => {
           className="underline underline-offset-2 cursor-pointer"
           onClick={createNewRoom}
         >
-          If you don't have an invite, click here to generate one.
+          If you don't have a room ID, click here to generate one.
         </div>
       </div>
     </div>
