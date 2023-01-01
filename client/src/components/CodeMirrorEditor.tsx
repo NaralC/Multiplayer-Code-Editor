@@ -1,4 +1,4 @@
-import { FC, MutableRefObject, useCallback, useEffect, useRef, useState } from "react";
+import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { ViewUpdate } from "@codemirror/view";
 import { javascript } from "@codemirror/lang-javascript";
 import { okaidia } from "@uiw/codemirror-theme-okaidia";
@@ -33,12 +33,11 @@ const CodeMirrorEditor: FC<ICodeMirrorEditorProps> = ({ socketRef, roomId, onCod
     }
   }, [socketRef.current]);
 
-
   return (
       <CodeMirror
         value={code}
         height="250px"
-        extensions={[javascript({ jsx: true })]}
+        extensions={[javascript({ jsx: true, typescript: true })]}
         onChange={onChange}
         theme={okaidia}
       />

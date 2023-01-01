@@ -99,7 +99,7 @@ const EditorPage: FC = () => {
 
   return (
     <div className="page-background">
-      <div className="h-screen min-w-fit p-5 basis-1/5 bg-gray-300">
+      <div className="min-h-screen min-w-fit p-5 basis-1/5 bg-gray-300">
         <div className="text-4xl flex flex-col justify-around">
           Navbar
           <div className="">

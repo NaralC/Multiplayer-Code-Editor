@@ -54,7 +54,7 @@ const Dropdown: FC<IDropdownProps> = ({ content, selected, setSelected }) => {
                     key={idx}
                     className={({ active }) =>
                       `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                        active ? "bg-teal-600 text-white" : "text-gray-900"
+                        active ? "bg-blue-600 text-white" : "text-gray-900"
                       }`
                     }
                     value={item}
@@ -71,7 +71,7 @@ const Dropdown: FC<IDropdownProps> = ({ content, selected, setSelected }) => {
                         {selected ? (
                           <span
                             className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
-                              active ? "text-white" : "text-teal-600"
+                              active ? "text-white" : "text-blue-600"
                             }`}
                           >
                             <MdCheck className="h-5 w-5" aria-hidden="true" />
