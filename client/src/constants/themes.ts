@@ -1,3 +1,3 @@
-const theme: string[] = ['Default', 'Monokai'];
+const themes: string[] = ['Default', 'Monokai'];
 
-export default theme;
+export default themes;

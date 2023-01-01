@@ -1,4 +1,4 @@
-import { MutableRefObject } from "react";
+import { Dispatch, MutableRefObject } from "react";
 import { Socket } from "socket.io-client";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
 
@@ -21,4 +21,10 @@ export interface ICodeMirrorEditorProps {
   > | null>;
   roomId: string | undefined;
   onCodeChange: (code: any) => void;
+}
+
+export interface IDropdownProps {
+  content: string[];
+  selected: string;
+  setSelected: Dispatch<React.SetStateAction<string>>
 }
