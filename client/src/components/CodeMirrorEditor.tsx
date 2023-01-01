@@ -1,29 +1,15 @@
 import { FC, MutableRefObject, useCallback, useEffect, useRef, useState } from "react";
-import { ViewUpdate, EditorView } from "@codemirror/view";
+import { ViewUpdate } from "@codemirror/view";
 import { javascript } from "@codemirror/lang-javascript";
 import { okaidia } from "@uiw/codemirror-theme-okaidia";
 import CodeMirror from "@uiw/react-codemirror";
-import { useCodeMirror } from "@uiw/react-codemirror";
-
-import Codemirror from "codemirror";
-import { Socket } from "socket.io-client";
-import { DefaultEventsMap } from "socket.io/dist/typed-events";
 import ACTIONS from "../constants/actions";
-
-interface ICodeMirrorEditorProps {
-  socketRef: MutableRefObject<Socket<
-    DefaultEventsMap,
-    DefaultEventsMap
-  > | null>;
-  roomId: string | undefined;
-  onCodeChange: (code: any) => void;
-}
+import { ICodeMirrorEditorProps } from "../constants/interfaces";
 
 const CodeMirrorEditor: FC<ICodeMirrorEditorProps> = ({ socketRef, roomId, onCodeChange }) => {
   const [code, setCode] = useState<string>('console.log("hello world")')
 
   const onChange = useCallback((newCode: string, viewUpdate: ViewUpdate) => {
-    // console.log(value);
     socketRef.current?.emit(ACTIONS.CODE_CHANGE, {
       roomId,
       code: newCode,
@@ -32,7 +18,6 @@ const CodeMirrorEditor: FC<ICodeMirrorEditorProps> = ({ socketRef, roomId, onCod
   }, []);
 
   const effectRan = useRef<boolean>(false)
-
   useEffect(() => {
       if (socketRef.current) {
         socketRef.current?.on(ACTIONS.CODE_CHANGE, ({ code }) => {
@@ -52,7 +37,7 @@ const CodeMirrorEditor: FC<ICodeMirrorEditorProps> = ({ socketRef, roomId, onCod
   return (
       <CodeMirror
         value={code}
-        height="200px"
+        height="250px"
         extensions={[javascript({ jsx: true })]}
         onChange={onChange}
         theme={okaidia}

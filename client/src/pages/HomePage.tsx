@@ -39,7 +39,7 @@ const HomePage: FC = () => {
     }
 
     setTimeout(() => {
-      // Send something to the backend here
+      // Send data to the next page
 
       navigate(`/editor/${roomId}`, {
         state: {

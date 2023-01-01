@@ -1,5 +1,3 @@
-Hey don't mind the fact that each connection comes with an extra socket 🥶 (for now)
-
 ## You just cloned the project
 ### To get the frontend running:
 1. cd client
@@ -17,5 +15,11 @@ Hey don't mind the fact that each connection comes with an extra socket 🥶 (fo
 - ~~Code doesn't automatically sync for late joiners~~
 > The problem was in CodeMirrorEditor, the onChangeCode sets to the default starting code - not the updated code.
 
-- If the host disconnects, the room dies
+- ~~If the host disconnects, the room dies~~
+- More like: if there's only 1 player left and you refresh the page, the code is reset back to default. Normally if there are multiple people - the newly written code persists. Maybe bring we could store the code locally if there's a single player?
 - Fast typing glitches out the code editor
+
+## Features To be Implemented
+- Language dropdown picker
+- Editor Theme dropdown picker
+- Compilation

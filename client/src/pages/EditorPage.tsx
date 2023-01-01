@@ -1,9 +1,7 @@
 import { FC, MutableRefObject, useEffect, useRef, useState } from "react";
 import Client from "../components/Client";
-import MonacoEditor from "../components/MonacoEditor";
 import ACTIONS from "../constants/actions";
 import { IClientProps } from "../constants/interfaces";
-import { defaultJS } from "../constants/defaultCode";
 import "../App.css";
 
 import initSocket from "../socket/socket";
@@ -19,6 +17,7 @@ import { DefaultEventsMap } from "socket.io/dist/typed-events";
 import CodeMirrorEditor from "../components/CodeMirrorEditor";
 
 const EditorPage: FC = () => {
+  const [clients, setClients] = useState<IClientProps[]>([]);
   const codeRef = useRef(null);
   const routerNavigator = useNavigate();
   const { roomId } = useParams(); // Pull room id from url
@@ -28,7 +27,6 @@ const EditorPage: FC = () => {
     DefaultEventsMap
   > | null> = useRef(null);
   const location: any = useLocation();
-
   const effectRan = useRef<boolean>(false);
 
   useEffect(() => {
@@ -84,8 +82,6 @@ const EditorPage: FC = () => {
     };
   }, []);
 
-  const [clients, setClients] = useState<IClientProps[]>([]);
-
   const copyToClipboard = async () => {
     if (!roomId) {
       toast.error("No room id? You shouldn't be here.");
@@ -140,8 +136,9 @@ const EditorPage: FC = () => {
           </button>
         </div>
       </div>
-      <div className="h-screen basis-4/5 bg-white text-4xl">
-        Code Editor
+      <div className="min-h-screen basis-4/5 bg-white text-4xl overflow-x-scroll">
+        <div>Code Editor</div>
+        <div>Dropdowns here</div>
         {/* <MonacoEditor
           defaultCode={defaultJS.defaultCode}
           language={defaultJS.language}
