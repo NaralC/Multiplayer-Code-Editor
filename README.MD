@@ -26,3 +26,4 @@
 - Editor Theme dropdown picker
 - Make current theme sync with web sockets
 - *Compilation with Judge0*
+- Make compiltation status sync with web sockets

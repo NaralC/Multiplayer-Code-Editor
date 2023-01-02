@@ -19,6 +19,7 @@ import Dropdown from "../components/Dropdown";
 import themes from "../constants/themes";
 import languages from "../constants/languages";
 import { copyToClipboard } from "../utility/helpers";
+import axios from "axios";
 
 const EditorPage: FC = () => {
   const [clients, setClients] = useState<IClientProps[]>([]);
@@ -29,12 +30,11 @@ const EditorPage: FC = () => {
   const [currentLanguage, setCurrentLanguage] = useState(languages[0]);
   const [currentTheme, setCurrentTheme] = useState(themes[0]);
 
-  const socketRef: MutableRefObject<Socket<
-    DefaultEventsMap,
-    DefaultEventsMap
-  > | null> = useRef(null);
+  const socketRef = useRef<Socket<DefaultEventsMap, DefaultEventsMap> | null>(
+    null
+  );
   const location: any = useLocation();
-  const effectRan = useRef<boolean>(false);
+  const effectRan = useRef(false);
 
   useEffect(() => {
     const init = async () => {
@@ -89,13 +89,62 @@ const EditorPage: FC = () => {
     };
   }, []);
 
-  const leaveRoom = () => {
-    routerNavigator("/");
-  };
-
   if (!location.state) {
     return <Navigate to="/" />;
   }
+
+  const [isCompiling, setIsCompiling] = useState(false);
+  const handleCompilation = (): void => {
+    if (isCompiling) return;
+
+    setIsCompiling(true);
+    axios
+      .request({
+        method: "POST",
+        url: "https://judge0-ce.p.rapidapi.com/submissions",
+        params: { base64_encoded: "true", fields: "*" },
+        headers: {
+          "content-type": "application/json",
+          "Content-Type": "application/json",
+          "X-RapidAPI-Key":
+            "4af38674cfmshe4a55f5494063dep1de90djsn4445d89292fa",
+          "X-RapidAPI-Host": "judge0-ce.p.rapidapi.com",
+        },
+        data: '{"language_id":52,"source_code":"I2luY2x1ZGUgPHN0ZGlvLmg+CgppbnQgbWFpbih2b2lkKSB7CiAgY2hhciBuYW1lWzEwXTsKICBzY2FuZigiJXMiLCBuYW1lKTsKICBwcmludGYoImhlbGxvLCAlc1xuIiwgbmFtZSk7CiAgcmV0dXJuIDA7Cn0=","stdin":"SnVkZ2Uw"}',
+      })
+      .then(async (response) => {
+        console.log(response.data);
+
+        const checkOutcome = async () => {
+          axios
+            .request({
+              method: "GET",
+              url: `https://judge0-ce.p.rapidapi.com/submissions/${response.data?.token}`,
+              params: { base64_encoded: "true", fields: "*" },
+              headers: {
+                "X-RapidAPI-Key":
+                  "4af38674cfmshe4a55f5494063dep1de90djsn4445d89292fa",
+                "X-RapidAPI-Host": "judge0-ce.p.rapidapi.com",
+              },
+            })
+            .then(({ data }) => {
+              console.log(data);
+              setIsCompiling(false);
+            })
+        };
+
+        checkOutcome();
+      })
+      .catch((err) => {
+        if (axios.isAxiosError(err)) {
+          console.log(err);
+        } else {
+          console.error(err);
+        }
+
+        setIsCompiling(false);
+      });
+  };
 
   return (
     <div className="page-background">
@@ -121,7 +170,7 @@ const EditorPage: FC = () => {
           <button
             type="button"
             className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
-            onClick={leaveRoom}
+            onClick={() => routerNavigator("/")}
           >
             Leave Room
           </button>
@@ -129,16 +178,25 @@ const EditorPage: FC = () => {
       </div>
       <div className="min-h-screen basis-4/5 bg-white text-4xl overflow-x-scroll">
         <div>Code Editor</div>
-        <div className="flex flex-row m-6">
-          <Dropdown content={languages} selected={currentLanguage} setSelected={setCurrentLanguage}/>
-          <Dropdown content={themes} selected={currentTheme} setSelected={setCurrentTheme}/>
+        <div className="flex flex-row m-6 gap-6">
+          <Dropdown
+            content={languages}
+            selected={currentLanguage}
+            setSelected={setCurrentLanguage}
+          />
+          <Dropdown
+            content={themes}
+            selected={currentTheme}
+            setSelected={setCurrentTheme}
+          />
+          <button
+            className="bg-green-400 rounded-lg text-base px-5"
+            onClick={handleCompilation}
+          >
+            Compile
+          </button>
+          <div>{isCompiling === true ? 'Compiling' : 'Not Compiling'}</div> 
         </div>
-        {/* <MonacoEditor
-          defaultCode={defaultJS.defaultCode}
-          language={defaultJS.language}
-          onChange={defaultJS.onChange}
-          theme={defaultJS.theme}
-        /> */}
         <CodeMirrorEditor
           socketRef={socketRef}
           roomId={roomId}
