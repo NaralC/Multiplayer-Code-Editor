@@ -7,7 +7,7 @@
 ### To get the backend running:
 1. cd server
 2. npm i 
-3. npm start  
+3. npm run serve
 
 ## Know Bugs
 - ~~Everyone joins with an unused duplicated socket~~
@@ -18,6 +18,7 @@
 - ~~If the host disconnects, the room dies~~
 - More like: if there's only 1 player left and you refresh the page, the code is reset back to default. Normally if there are multiple people - the newly written code persists. Maybe bring we could store the code locally if there's a single player?
 - Fast typing glitches out the code editor
+- Names that are too long messes up sidebar CSS
 
 ## Features To be Implemented
 - Language dropdown picker

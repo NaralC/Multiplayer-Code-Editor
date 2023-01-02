@@ -9,7 +9,7 @@ const initSocket = async (): Promise<Socket<DefaultEventsMap, DefaultEventsMap>>
         transports: ['websocket'],
     };
 
-    return io('http://localhost:80/', options);
+    return io('http://localhost:8000/', options);
     // return io(process.env.BACKEND_URL, options);
 }
 
