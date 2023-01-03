@@ -1,4 +1,4 @@
-import { FC, MutableRefObject, useEffect, useRef, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import Client from "../components/Client";
 import ACTIONS from "../constants/actions";
 import { IClientProps } from "../constants/interfaces";
@@ -80,6 +80,14 @@ const EditorPage: FC = () => {
           });
         }
       );
+
+      socketRef.current.on(
+        ACTIONS.COMPILATION_STATUS_CHANGE,
+        ({ compilationStatus }) => {
+          console.log('ayo received something here', compilationStatus);
+          setIsCompiling(isCompiling);
+        }
+      );
     };
     if (effectRan.current === false) init();
 
@@ -87,6 +95,7 @@ const EditorPage: FC = () => {
       socketRef.current?.disconnect();
       socketRef.current?.off(ACTIONS.JOINED);
       socketRef.current?.off(ACTIONS.DISCONNECTED);
+      socketRef.current?.off(ACTIONS.COMPILATION_STATUS_CHANGE);
       effectRan.current = true;
     };
   }, []);
@@ -204,8 +213,18 @@ const EditorPage: FC = () => {
               onClick={() => {
                 // currently using a mock version since the code judge API only allows 50 calls/day
                 setIsCompiling(true);
+                socketRef.current?.emit(ACTIONS.COMPILATION_STATUS_CHANGE, {
+                  roomId,
+                  compilationStatus: true
+                });
+
                 setTimeout(() => {
                   setIsCompiling(false);
+
+                  socketRef.current?.emit(ACTIONS.COMPILATION_STATUS_CHANGE, {
+                    roomId,
+                    compilationStatus: false
+                  });
                 }, 5000);
               }}
             />

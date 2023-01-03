@@ -3,6 +3,7 @@ import http from "http";
 import cors from "cors";
 import { Server } from "socket.io";
 import ACTIONS from "../client/src/constants/actions";
+import { on } from "events";
 
 const app = express();
 app.use(cors());
@@ -68,8 +69,15 @@ io.on("connection", (socket) => {
 
   socket.on(ACTIONS.SYNC_CODE, ({ socketId, code }) => {
     // console.log('syncing code!', code);
-    io.to(socketId).emit(ACTIONS.CODE_CHANGE, { code });
+    // io.to(socketId).emit(ACTIONS.CODE_CHANGE, { code });
+    socket.in(socketId).emit(ACTIONS.CODE_CHANGE, { code });
   });
+
+  socket.on(ACTIONS.COMPILATION_STATUS_CHANGE, ({ roomId, compilationStatus }) => {
+    // show compilation modal
+    console.log('Compilation status: ', compilationStatus)
+    io.to(roomId).emit(ACTIONS.COMPILATION_STATUS_CHANGE, { compilationStatus })
+  })
 });
 
 server.listen(PORT, () => {
