@@ -20,6 +20,8 @@ import themes from "../constants/themes";
 import languages from "../constants/languages";
 import { copyToClipboard } from "../utility/helpers";
 import axios from "axios";
+import Modal from "../components/Modal";
+import { AiFillPlayCircle } from "react-icons/ai";
 
 const EditorPage: FC = () => {
   const [clients, setClients] = useState<IClientProps[]>([]);
@@ -130,7 +132,7 @@ const EditorPage: FC = () => {
             .then(({ data }) => {
               console.log(data);
               setIsCompiling(false);
-            })
+            });
         };
 
         checkOutcome();
@@ -147,65 +149,78 @@ const EditorPage: FC = () => {
   };
 
   return (
-    <div className="page-background">
-      <div className="min-h-screen min-w-fit p-5 basis-1/5 bg-gray-300">
-        <div className="text-4xl flex flex-col justify-around">
-          Navbar
-          <div className="">
-            {clients.map((client, idx) => (
-              <Client
-                key={idx}
-                nickname={client.nickname}
-                socketId={client.socketId}
-              />
-            ))}
+    <>
+      <Modal
+        isOpen={isCompiling}
+        setIsOpen={setIsCompiling}
+        title={"Code is Being Compiled..."}
+        description={"Please wait — we appreciate your patience!"}
+      />
+      <div className="page-background">
+        <div className="min-h-screen min-w-fit p-5 basis-1/5 bg-gray-300">
+          <div className="text-4xl flex flex-col justify-around">
+            Navbar
+            <div className="">
+              {clients.map((client, idx) => (
+                <Client
+                  key={idx}
+                  nickname={client.nickname}
+                  socketId={client.socketId}
+                />
+              ))}
+            </div>
+            <button
+              type="button"
+              className="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+              onClick={() => copyToClipboard(roomId)}
+            >
+              Copy Room ID
+            </button>
+            <button
+              type="button"
+              className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+              onClick={() => routerNavigator("/")}
+            >
+              Leave Room
+            </button>
           </div>
-          <button
-            type="button"
-            className="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
-            onClick={() => copyToClipboard(roomId)}
-          >
-            Copy Room ID
-          </button>
-          <button
-            type="button"
-            className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
-            onClick={() => routerNavigator("/")}
-          >
-            Leave Room
-          </button>
+        </div>
+        <div className="min-h-screen basis-4/5 bg-white text-4xl overflow-x-scroll">
+          <div>Code Editor</div>
+          <div className="flex flex-row m-6 gap-6 z-0">
+            <Dropdown
+              content={languages}
+              selected={currentLanguage}
+              setSelected={setCurrentLanguage}
+            />
+            <Dropdown
+              content={themes}
+              selected={currentTheme}
+              setSelected={setCurrentTheme}
+            />
+            <AiFillPlayCircle
+              className="hover:cursor-pointer"
+              // onClick={handleCompilation}
+              onClick={() => {
+                // currently using a mock version since the code judge API only allows 50 calls/day
+                setIsCompiling(true);
+                setTimeout(() => {
+                  setIsCompiling(false);
+                }, 5000);
+              }}
+            />
+            <div>{isCompiling === true ? "Compiling" : "Not Compiling"}</div>
+          </div>
+          <CodeMirrorEditor
+            socketRef={socketRef}
+            roomId={roomId}
+            onCodeChange={(code) => {
+              codeRef.current = code;
+            }}
+          />
         </div>
       </div>
-      <div className="min-h-screen basis-4/5 bg-white text-4xl overflow-x-scroll">
-        <div>Code Editor</div>
-        <div className="flex flex-row m-6 gap-6">
-          <Dropdown
-            content={languages}
-            selected={currentLanguage}
-            setSelected={setCurrentLanguage}
-          />
-          <Dropdown
-            content={themes}
-            selected={currentTheme}
-            setSelected={setCurrentTheme}
-          />
-          <button
-            className="bg-green-400 rounded-lg text-base px-5"
-            onClick={handleCompilation}
-          >
-            Compile
-          </button>
-          <div>{isCompiling === true ? 'Compiling' : 'Not Compiling'}</div> 
-        </div>
-        <CodeMirrorEditor
-          socketRef={socketRef}
-          roomId={roomId}
-          onCodeChange={(code) => {
-            codeRef.current = code;
-          }}
-        />
-      </div>
-    </div>
+    </>
   );
 };
 

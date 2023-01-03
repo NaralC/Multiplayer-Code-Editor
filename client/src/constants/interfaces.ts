@@ -28,3 +28,10 @@ export interface IDropdownProps {
   selected: string;
   setSelected: Dispatch<SetStateAction<string>>
 }
+
+export interface IModalProps {
+  isOpen: boolean;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  title: string;
+  description: string;
+}

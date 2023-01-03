@@ -1,3 +1,4 @@
+import { ChangeEvent } from "react";
 import { toast } from "react-toastify";
 
 export const copyToClipboard = async (roomId: string | undefined): Promise<void> => {
