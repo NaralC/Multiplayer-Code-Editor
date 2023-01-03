@@ -85,7 +85,7 @@ const EditorPage: FC = () => {
         ACTIONS.COMPILATION_STATUS_CHANGE,
         ({ compilationStatus }) => {
           console.log('ayo received something here', compilationStatus);
-          setIsCompiling(isCompiling);
+          setIsCompiling(compilationStatus);
         }
       );
     };
