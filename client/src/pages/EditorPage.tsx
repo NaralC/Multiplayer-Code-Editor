@@ -84,8 +84,16 @@ const EditorPage: FC = () => {
       socketRef.current.on(
         ACTIONS.COMPILATION_STATUS_CHANGE,
         ({ compilationStatus }) => {
-          console.log('ayo received something here', compilationStatus);
+          // console.log('ayo new compilation status', compilationStatus);
           setIsCompiling(compilationStatus);
+        }
+      );
+
+      socketRef.current.on(
+        ACTIONS.THEME_CHANGE,
+        ({ new_theme }: any) => {
+          console.log(`Theme is: ${new_theme}`);
+          setCurrentTheme(new_theme);
         }
       );
     };
@@ -96,6 +104,7 @@ const EditorPage: FC = () => {
       socketRef.current?.off(ACTIONS.JOINED);
       socketRef.current?.off(ACTIONS.DISCONNECTED);
       socketRef.current?.off(ACTIONS.COMPILATION_STATUS_CHANGE);
+      socketRef.current?.off(ACTIONS.THEME_CHANGE);
       effectRan.current = true;
     };
   }, []);
@@ -201,11 +210,15 @@ const EditorPage: FC = () => {
               content={languages}
               selected={currentLanguage}
               setSelected={setCurrentLanguage}
+              roomId={roomId}
+              socketRef={socketRef}
             />
             <Dropdown
               content={Object.keys(themes)}
               selected={currentTheme}
               setSelected={setCurrentTheme}
+              roomId={roomId}
+              socketRef={socketRef}
             />
             <AiFillPlayCircle
               className="hover:cursor-pointer"

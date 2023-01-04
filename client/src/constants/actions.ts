@@ -6,6 +6,7 @@ const ACTIONS = {
     SYNC_CODE: 'sync-code',
     LEAVE: 'leave',
     COMPILATION_STATUS_CHANGE: 'compilation-status-change',
+    THEME_CHANGE: 'theme-change'
 }
 
 export default ACTIONS;

@@ -27,7 +27,12 @@ export interface ICodeMirrorEditorProps {
 export interface IDropdownProps {
   content: string[];
   selected: string;
-  setSelected: Dispatch<SetStateAction<string>>
+  setSelected: Dispatch<SetStateAction<string>>;
+  socketRef: MutableRefObject<Socket<
+    DefaultEventsMap,
+    DefaultEventsMap
+  > | null>;
+  roomId: string | undefined;
 }
 
 export interface IModalProps {
