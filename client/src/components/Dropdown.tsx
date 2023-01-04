@@ -18,7 +18,10 @@ const Dropdown: FC<IDropdownProps> = ({ content, selected, setSelected }) => {
 
   return (
     <div className="min-w-fit max-w-[72px] overflow-y-visible z-10">
-      <Combobox value={selected} onChange={setSelected}>
+      <Combobox value={selected} onChange={(e) => {
+        console.log(e)
+        setSelected(e)
+        }}>
         <div className="relative mt-1">
           <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
               <Combobox.Input

@@ -29,8 +29,8 @@ const EditorPage: FC = () => {
   const routerNavigator = useNavigate();
   const { roomId } = useParams(); // Pull room id from url
 
-  const [currentLanguage, setCurrentLanguage] = useState(languages[0]);
-  const [currentTheme, setCurrentTheme] = useState(themes[0]);
+  const [currentLanguage, setCurrentLanguage] = useState<string>(languages[0]);
+  const [currentTheme, setCurrentTheme] = useState<string>('Okaidia');
 
   const socketRef = useRef<Socket<DefaultEventsMap, DefaultEventsMap> | null>(
     null
@@ -203,7 +203,7 @@ const EditorPage: FC = () => {
               setSelected={setCurrentLanguage}
             />
             <Dropdown
-              content={themes}
+              content={Object.keys(themes)}
               selected={currentTheme}
               setSelected={setCurrentTheme}
             />
@@ -236,6 +236,7 @@ const EditorPage: FC = () => {
             onCodeChange={(code) => {
               codeRef.current = code;
             }}
+            currentTheme={themes[currentTheme]}
           />
         </div>
       </div>

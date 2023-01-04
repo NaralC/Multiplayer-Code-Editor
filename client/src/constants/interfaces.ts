@@ -21,6 +21,7 @@ export interface ICodeMirrorEditorProps {
   > | null>;
   roomId: string | undefined;
   onCodeChange: (code: any) => void;
+  currentTheme: "light" | "dark" | "none" | undefined
 }
 
 export interface IDropdownProps {
