@@ -119,6 +119,7 @@ const EditorPage: FC = () => {
     };
   }, []);
 
+  // Prevents hard typing the url
   if (!location.state) {
     return <Navigate to="/" />;
   }
