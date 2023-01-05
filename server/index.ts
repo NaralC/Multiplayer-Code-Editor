@@ -66,9 +66,10 @@ io.on("connection", (socket) => {
     socket.in(roomId).emit(ACTIONS.CODE_CHANGE, { code });
   });
 
-  socket.on(ACTIONS.SYNC_CODE_AND_THEME, ({ socketId, code, newTheme }) => {
+  socket.on(ACTIONS.SYNC_CODE_THEME_LANGUAGE, ({ socketId, code, newTheme, newLanguage }) => {
     socket.in(socketId).emit(ACTIONS.CODE_CHANGE, { code });
     socket.in(socketId).emit(ACTIONS.THEME_CHANGE, { newTheme });
+    socket.in(socketId).emit(ACTIONS.LANGUAGE_CHANGE, { newLanguage });
   });
 
   socket.on(ACTIONS.COMPILATION_STATUS_CHANGE, ({ roomId, compilationStatus }) => {
@@ -77,6 +78,10 @@ io.on("connection", (socket) => {
 
   socket.on(ACTIONS.THEME_CHANGE, ({ roomId, newTheme }) => {
     io.to(roomId).emit(ACTIONS.THEME_CHANGE, { newTheme })
+  })
+
+  socket.on(ACTIONS.LANGUAGE_CHANGE, ({ roomId, newLanguage }) => {
+    io.to(roomId).emit(ACTIONS.LANGUAGE_CHANGE, { newLanguage })
   })
 });
 

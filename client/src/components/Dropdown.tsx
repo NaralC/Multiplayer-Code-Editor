@@ -10,7 +10,8 @@ const Dropdown: FC<IDropdownProps> = ({
   setSelected,
   socketRef,
   roomId,
-  auxiliaryRef
+  auxiliaryRef,
+  dropdownType,
 }) => {
   const [query, setQuery] = useState("");
 
@@ -27,9 +28,21 @@ const Dropdown: FC<IDropdownProps> = ({
   const effectRan = useRef(false);
   useEffect(() => {
     if (socketRef.current) {
-      socketRef.current?.on(ACTIONS.THEME_CHANGE, ({ newTheme }) => {
-        setSelected(newTheme);
-      });
+      if (dropdownType === "Theme") {
+        socketRef.current?.on(ACTIONS.THEME_CHANGE, ({ newTheme }) => {
+          setSelected(newTheme);
+        });
+      } 
+
+      else if (dropdownType === "Language") {
+        socketRef.current?.on(ACTIONS.LANGUAGE_CHANGE, ({ newLanguage }) => {
+          setSelected(newLanguage);
+        });
+      } 
+      
+      else {
+        console.log("socketRef receiving the wrong data 🤔");
+      }
     }
 
     return () => {
@@ -42,13 +55,27 @@ const Dropdown: FC<IDropdownProps> = ({
     <div className="min-w-fit max-w-[72px] overflow-y-visible z-10">
       <Combobox
         value={selected}
-        onChange={(newTheme) => {
-          setSelected(newTheme);
-          auxiliaryRef.current = newTheme;
-          socketRef.current?.emit(ACTIONS.THEME_CHANGE, {
-            roomId,
-            newTheme: newTheme,
-          });
+        onChange={(newSelection) => {
+          setSelected(newSelection);
+          auxiliaryRef.current = newSelection;
+          
+          if (dropdownType === "Theme") {
+            socketRef.current?.emit(ACTIONS.THEME_CHANGE, {
+              roomId,
+              newTheme: newSelection,
+            });
+          }
+
+          else if (dropdownType === "Language") {
+            socketRef.current?.emit(ACTIONS.LANGUAGE_CHANGE, {
+              roomId,
+              newLanguage: newSelection,
+            });
+          }
+
+          else {
+            console.log("Combobox newSelection error 🤔")
+          }
         }}
       >
         <div className="relative mt-1">

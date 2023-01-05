@@ -12,7 +12,7 @@ export interface ICodeMirrorEditorProps {
     DefaultEventsMap
   > | null>;
   roomId: string | undefined;
-  onCodeChange: (code: any) => void;
+  onCodeChange: (code: string) => void;
   currentTheme: "light" | "dark" | "none" | undefined
 }
 
@@ -24,8 +24,9 @@ export interface IDropdownProps {
     DefaultEventsMap,
     DefaultEventsMap
   > | null>;
-  auxiliaryRef: MutableRefObject<any>;
+  auxiliaryRef: MutableRefObject<string>;
   roomId: string | undefined;
+  dropdownType: string;
 }
 
 export interface IModalProps {

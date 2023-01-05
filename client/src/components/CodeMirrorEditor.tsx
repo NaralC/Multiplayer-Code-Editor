@@ -1,8 +1,6 @@
 import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { ViewUpdate } from "@codemirror/view";
 import { javascript } from "@codemirror/lang-javascript";
-import { okaidia } from "@uiw/codemirror-theme-okaidia";
-import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import CodeMirror from "@uiw/react-codemirror";
 import ACTIONS from "../constants/actions";
 import { ICodeMirrorEditorProps } from "../constants/interfaces";

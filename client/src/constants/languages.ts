@@ -1,10 +1,11 @@
-// import { javascript } from "@codemirror/lang-javascript";
+import { javascript } from "@codemirror/lang-javascript";
 
-const languages: string[] = ["JavaScript", "Python", "TypeScript"];
-
-// const test = [
-//   { JavaScript: [javascript({ jsx: true, typescript: false })] },
-//   { TypeScript: [javascript({ jsx: true, typescript: true })] },
-// ];
+const languages: {
+  [key: string]: any;
+} =
+  {
+    'JavaScript': [javascript({ jsx: true, typescript: false })],
+    'TypeScript': [javascript({ jsx: true, typescript: true })],
+  };
 
 export default languages;

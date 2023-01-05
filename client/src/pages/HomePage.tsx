@@ -10,7 +10,6 @@ import "react-toastify/dist/ReactToastify.css";
 import useKeyPress from "../hooks/useKeyPress";
 import "../App.css";
 import { Transition } from "@headlessui/react";
-import Modal from '../components/Modal';
 
 const HomePage: FC = () => {
   const navigate = useNavigate();

@@ -25,13 +25,14 @@ import { AiFillPlayCircle } from "react-icons/ai";
 
 const EditorPage: FC = () => {
   const [clients, setClients] = useState<IClientProps[]>([]);
-  const codeRef = useRef(null);
+  const codeRef = useRef<string | null>(null);
   const routerNavigator = useNavigate();
   const { roomId } = useParams(); // Pull room id from url
   
-  const [currentLanguage, setCurrentLanguage] = useState<string>(languages[0]);
-  const [currentTheme, setCurrentTheme] = useState<string>('Okaidia');
+  const [currentLanguage, setCurrentLanguage] = useState<string>(Object.keys(languages)[0]);
+  const [currentTheme, setCurrentTheme] = useState<string>(Object.keys(themes)[0]);
   const themeRef = useRef(currentTheme);
+  const languageRef = useRef(currentLanguage);
   
   const socketRef = useRef<Socket<DefaultEventsMap, DefaultEventsMap> | null>(
     null
@@ -65,10 +66,11 @@ const EditorPage: FC = () => {
             toast.success(`${nickname} just joined the room!`);
           }
           setClients(clients);
-          socketRef.current?.emit(ACTIONS.SYNC_CODE_AND_THEME, {
+          socketRef.current?.emit(ACTIONS.SYNC_CODE_THEME_LANGUAGE, {
             code: codeRef.current,
             socketId,
             newTheme: themeRef.current,
+            newLanguage: languageRef.current
           });
         }
       );
@@ -96,6 +98,13 @@ const EditorPage: FC = () => {
           setCurrentTheme(newTheme);
         }
       );
+
+      socketRef.current.on(
+        ACTIONS.LANGUAGE_CHANGE,
+        ({ newLanguage }) => {
+          setCurrentLanguage(newLanguage);
+        }
+      );
     };
     if (effectRan.current === false) init();
 
@@ -105,6 +114,7 @@ const EditorPage: FC = () => {
       socketRef.current?.off(ACTIONS.DISCONNECTED);
       socketRef.current?.off(ACTIONS.COMPILATION_STATUS_CHANGE);
       socketRef.current?.off(ACTIONS.THEME_CHANGE);
+      socketRef.current?.off(ACTIONS.LANGUAGE_CHANGE);
       effectRan.current = true;
     };
   }, []);
@@ -206,14 +216,15 @@ const EditorPage: FC = () => {
         <div className="min-h-screen basis-4/5 bg-white text-4xl overflow-x-scroll">
           <div>Code Editor</div>
           <div className="flex flex-row m-6 gap-6 z-0">
-            {/* <Dropdown
-              content={languages}
+            <Dropdown
+              content={Object.keys(languages)}
               selected={currentLanguage}
               setSelected={setCurrentLanguage}
               roomId={roomId}
               socketRef={socketRef}
-              auxiliaryRef={}
-            /> */}
+              auxiliaryRef={languageRef}
+              dropdownType={'Language'}
+            />
             <Dropdown
               content={Object.keys(themes)}
               selected={currentTheme}
@@ -221,6 +232,7 @@ const EditorPage: FC = () => {
               roomId={roomId}
               socketRef={socketRef}
               auxiliaryRef={themeRef}
+              dropdownType={'Theme'}
             />
             <AiFillPlayCircle
               className="hover:cursor-pointer"
