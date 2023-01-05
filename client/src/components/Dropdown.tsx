@@ -1,13 +1,11 @@
-import { FC, Fragment, useEffect, useRef, useState } from "react";
+import { FC, Fragment, useState } from "react";
 import { Combobox, Transition } from "@headlessui/react";
 import { MdOutlineArrowDropDownCircle, MdCheck } from "react-icons/md";
 import { IDropdownProps } from "../constants/interfaces";
-import themes from "../constants/themes";
 import ACTIONS from "../constants/actions";
 
 const Dropdown: FC<IDropdownProps> = ({ content, selected, setSelected, socketRef, roomId }) => {
   const [query, setQuery] = useState("");
-  // const [tempTheme, setTempTheme] = useState<string>('Okaidia');
 
   const filteredContent =
     query === ""
@@ -19,26 +17,15 @@ const Dropdown: FC<IDropdownProps> = ({ content, selected, setSelected, socketRe
           .includes(query.toLowerCase().replace(/\s+/g, ""))
       );
 
-  // const effectRan = useRef<boolean>(false)
-  // useEffect(() => {
-  //   if (socketRef.current) {
-  //     socketRef.current?.emit(ACTIONS.THEME_CHANGE, {
-  //       roomId,
-  //       new_theme: themes[tempTheme]
-  //     });
-  //   }
-
-  //   return () => {
-  //     socketRef.current?.off(ACTIONS.CODE_CHANGE);
-  //     effectRan.current = true;
-  //   }
-  // }, [socketRef.current]);
-
   return (
     <div className="min-w-fit max-w-[72px] overflow-y-visible z-10">
       <Combobox value={selected} onChange={(newTheme) => {
         setSelected(newTheme)
-        // setTempTheme(newTheme);
+
+        socketRef.current?.emit(ACTIONS.THEME_CHANGE, {
+          roomId,
+          newTheme: newTheme
+        });
       }}>
         <div className="relative mt-1">
           <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">

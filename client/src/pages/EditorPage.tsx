@@ -84,16 +84,15 @@ const EditorPage: FC = () => {
       socketRef.current.on(
         ACTIONS.COMPILATION_STATUS_CHANGE,
         ({ compilationStatus }) => {
-          // console.log('ayo new compilation status', compilationStatus);
           setIsCompiling(compilationStatus);
         }
       );
 
       socketRef.current.on(
         ACTIONS.THEME_CHANGE,
-        ({ new_theme }: any) => {
-          console.log(`Theme is: ${new_theme}`);
-          setCurrentTheme(new_theme);
+        ({ newTheme }) => {
+          // console.log(`ayo received theme here — ${newTheme}`);
+          setCurrentTheme(newTheme);
         }
       );
     };

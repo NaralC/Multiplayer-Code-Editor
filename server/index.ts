@@ -79,9 +79,9 @@ io.on("connection", (socket) => {
     io.to(roomId).emit(ACTIONS.COMPILATION_STATUS_CHANGE, { compilationStatus })
   })
 
-  socket.on(ACTIONS.THEME_CHANGE, ({ roomId, new_theme }) => {
-    console.log('New theme received: ', new_theme)
-    io.to(roomId).emit(ACTIONS.THEME_CHANGE, { new_theme })
+  socket.on(ACTIONS.THEME_CHANGE, ({ roomId, newTheme }) => {
+    // console.log('New theme received! ', newTheme)
+    io.to(roomId).emit(ACTIONS.THEME_CHANGE, { newTheme })
   })
 });
 
