@@ -21,10 +21,24 @@ export interface ICodeMirrorEditorProps {
   > | null>;
   roomId: string | undefined;
   onCodeChange: (code: any) => void;
+  currentTheme: "light" | "dark" | "none" | undefined
 }
 
 export interface IDropdownProps {
   content: string[];
   selected: string;
-  setSelected: Dispatch<SetStateAction<string>>
+  setSelected: Dispatch<SetStateAction<string>>;
+  socketRef: MutableRefObject<Socket<
+    DefaultEventsMap,
+    DefaultEventsMap
+  > | null>;
+  auxiliaryRef: MutableRefObject<any>;
+  roomId: string | undefined;
+}
+
+export interface IModalProps {
+  isOpen: boolean;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  title: string;
+  description: string;
 }

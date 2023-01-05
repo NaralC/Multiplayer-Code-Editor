@@ -2,11 +2,12 @@ import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { ViewUpdate } from "@codemirror/view";
 import { javascript } from "@codemirror/lang-javascript";
 import { okaidia } from "@uiw/codemirror-theme-okaidia";
+import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import CodeMirror from "@uiw/react-codemirror";
 import ACTIONS from "../constants/actions";
 import { ICodeMirrorEditorProps } from "../constants/interfaces";
 
-const CodeMirrorEditor: FC<ICodeMirrorEditorProps> = ({ socketRef, roomId, onCodeChange }) => {
+const CodeMirrorEditor: FC<ICodeMirrorEditorProps> = ({ socketRef, roomId, onCodeChange, currentTheme }) => {
   const [code, setCode] = useState<string>('console.log("hello world")')
 
   const onChange = useCallback((newCode: string, viewUpdate: ViewUpdate) => {
@@ -17,7 +18,7 @@ const CodeMirrorEditor: FC<ICodeMirrorEditorProps> = ({ socketRef, roomId, onCod
     onCodeChange(newCode);
   }, []);
 
-  const effectRan = useRef<boolean>(false)
+  const effectRan = useRef(false)
   useEffect(() => {
       if (socketRef.current) {
         socketRef.current?.on(ACTIONS.CODE_CHANGE, ({ code }) => {
@@ -39,7 +40,7 @@ const CodeMirrorEditor: FC<ICodeMirrorEditorProps> = ({ socketRef, roomId, onCod
         height="250px"
         extensions={[javascript({ jsx: true, typescript: true })]}
         onChange={onChange}
-        theme={okaidia}
+        theme={currentTheme}
       />
   );
 };

@@ -3,6 +3,7 @@ import http from "http";
 import cors from "cors";
 import { Server } from "socket.io";
 import ACTIONS from "../client/src/constants/actions";
+import { on } from "events";
 
 const app = express();
 app.use(cors());
@@ -62,14 +63,21 @@ io.on("connection", (socket) => {
   });
 
   socket.on(ACTIONS.CODE_CHANGE, ({ roomId, code }) => {
-    // console.log('receiving code!', code);
     socket.in(roomId).emit(ACTIONS.CODE_CHANGE, { code });
   });
 
-  socket.on(ACTIONS.SYNC_CODE, ({ socketId, code }) => {
-    // console.log('syncing code!', code);
-    io.to(socketId).emit(ACTIONS.CODE_CHANGE, { code });
+  socket.on(ACTIONS.SYNC_CODE_AND_THEME, ({ socketId, code, newTheme }) => {
+    socket.in(socketId).emit(ACTIONS.CODE_CHANGE, { code });
+    socket.in(socketId).emit(ACTIONS.THEME_CHANGE, { newTheme });
   });
+
+  socket.on(ACTIONS.COMPILATION_STATUS_CHANGE, ({ roomId, compilationStatus }) => {
+    io.to(roomId).emit(ACTIONS.COMPILATION_STATUS_CHANGE, { compilationStatus })
+  })
+
+  socket.on(ACTIONS.THEME_CHANGE, ({ roomId, newTheme }) => {
+    io.to(roomId).emit(ACTIONS.THEME_CHANGE, { newTheme })
+  })
 });
 
 server.listen(PORT, () => {

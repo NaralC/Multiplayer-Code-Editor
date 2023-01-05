@@ -22,6 +22,6 @@
 
 ## Features To be Implemented
 - Language dropdown picker + Make current language sync with web sockets
-- Editor Theme dropdown picker + Make current theme sync with web sockets
+- ~~Editor Theme dropdown picker + Make current theme sync with web sockets~~
 - *Compilation with Judge0*
 - Make compiltation status sync with web sockets + Implement cancellation with Axios

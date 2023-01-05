@@ -1,9 +1,17 @@
-import { FC, Fragment, useState } from "react";
+import { FC, Fragment, useEffect, useRef, useState } from "react";
 import { Combobox, Transition } from "@headlessui/react";
 import { MdOutlineArrowDropDownCircle, MdCheck } from "react-icons/md";
 import { IDropdownProps } from "../constants/interfaces";
+import ACTIONS from "../constants/actions";
 
-const Dropdown: FC<IDropdownProps> = ({ content, selected, setSelected }) => {
+const Dropdown: FC<IDropdownProps> = ({
+  content,
+  selected,
+  setSelected,
+  socketRef,
+  roomId,
+  auxiliaryRef
+}) => {
   const [query, setQuery] = useState("");
 
   const filteredContent =
@@ -16,22 +24,46 @@ const Dropdown: FC<IDropdownProps> = ({ content, selected, setSelected }) => {
             .includes(query.toLowerCase().replace(/\s+/g, ""))
         );
 
+  const effectRan = useRef(false);
+  useEffect(() => {
+    if (socketRef.current) {
+      socketRef.current?.on(ACTIONS.THEME_CHANGE, ({ newTheme }) => {
+        setSelected(newTheme);
+      });
+    }
+
+    return () => {
+      socketRef.current?.off(ACTIONS.CODE_CHANGE);
+      effectRan.current = true;
+    };
+  }, [socketRef.current]);
+
   return (
-    <div className="min-w-fit max-w-[72px] overflow-y-visible z-50">
-      <Combobox value={selected} onChange={setSelected}>
+    <div className="min-w-fit max-w-[72px] overflow-y-visible z-10">
+      <Combobox
+        value={selected}
+        onChange={(newTheme) => {
+          setSelected(newTheme);
+          auxiliaryRef.current = newTheme;
+          socketRef.current?.emit(ACTIONS.THEME_CHANGE, {
+            roomId,
+            newTheme: newTheme,
+          });
+        }}
+      >
         <div className="relative mt-1">
           <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
-              <Combobox.Input
-                className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
-                //   displayValue={(item) => item}
-                onChange={(event) => setQuery(event.target.value)}
+            <Combobox.Input
+              className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
+              //   displayValue={(item) => item}
+              onChange={(event) => setQuery(event.target.value)}
+            />
+            <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
+              <MdOutlineArrowDropDownCircle
+                className="h-5 w-5 text-gray-400"
+                aria-hidden="true"
               />
-              <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
-                <MdOutlineArrowDropDownCircle
-                  className="h-5 w-5 text-gray-400"
-                  aria-hidden="true"
-                />
-              </Combobox.Button>
+            </Combobox.Button>
           </div>
           <Transition
             as={Fragment}

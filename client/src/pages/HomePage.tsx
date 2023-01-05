@@ -10,6 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import useKeyPress from "../hooks/useKeyPress";
 import "../App.css";
 import { Transition } from "@headlessui/react";
+import Modal from '../components/Modal';
 
 const HomePage: FC = () => {
   const navigate = useNavigate();
@@ -65,12 +66,12 @@ const HomePage: FC = () => {
     <div className="page-background">
       <Transition
         show={isShowing}
-        enter="transition duration-500"
+        enter="transition-all duration-500"
         enterFrom="opacity-0 scale-50"
         enterTo="opacity-100 scale-100"
-        leave="transition duration-150"
-        leaveFrom="opacity-100"
-        leaveTo="opacity-0"
+        leave="transition-all duration-150"
+        leaveFrom="opacity-100 scale-100"
+        leaveTo="opacity-0 scale-50"
       >
         <div className="bg-white p-5 rounded-md flex flex-col gap-5 shadow-black shadow-md duration">
           <FaLaptopCode className="text-7xl mx-auto" />
