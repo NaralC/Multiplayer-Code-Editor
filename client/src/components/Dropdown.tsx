@@ -1,32 +1,56 @@
-import { FC, Fragment, useState } from "react";
+import { FC, Fragment, useEffect, useRef, useState } from "react";
 import { Combobox, Transition } from "@headlessui/react";
 import { MdOutlineArrowDropDownCircle, MdCheck } from "react-icons/md";
 import { IDropdownProps } from "../constants/interfaces";
 import ACTIONS from "../constants/actions";
 
-const Dropdown: FC<IDropdownProps> = ({ content, selected, setSelected, socketRef, roomId }) => {
+const Dropdown: FC<IDropdownProps> = ({
+  content,
+  selected,
+  setSelected,
+  socketRef,
+  roomId,
+  auxiliaryRef
+}) => {
   const [query, setQuery] = useState("");
 
   const filteredContent =
     query === ""
       ? content
       : content.filter((item) =>
-        item
-          .toLowerCase()
-          .replace(/\s+/g, "")
-          .includes(query.toLowerCase().replace(/\s+/g, ""))
-      );
+          item
+            .toLowerCase()
+            .replace(/\s+/g, "")
+            .includes(query.toLowerCase().replace(/\s+/g, ""))
+        );
+
+  const effectRan = useRef(false);
+  useEffect(() => {
+    if (socketRef.current) {
+      socketRef.current?.on(ACTIONS.THEME_CHANGE, ({ newTheme }) => {
+        setSelected(newTheme);
+      });
+    }
+
+    return () => {
+      socketRef.current?.off(ACTIONS.CODE_CHANGE);
+      effectRan.current = true;
+    };
+  }, [socketRef.current]);
 
   return (
     <div className="min-w-fit max-w-[72px] overflow-y-visible z-10">
-      <Combobox value={selected} onChange={(newTheme) => {
-        setSelected(newTheme)
-
-        socketRef.current?.emit(ACTIONS.THEME_CHANGE, {
-          roomId,
-          newTheme: newTheme
-        });
-      }}>
+      <Combobox
+        value={selected}
+        onChange={(newTheme) => {
+          setSelected(newTheme);
+          auxiliaryRef.current = newTheme;
+          socketRef.current?.emit(ACTIONS.THEME_CHANGE, {
+            roomId,
+            newTheme: newTheme,
+          });
+        }}
+      >
         <div className="relative mt-1">
           <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
             <Combobox.Input
@@ -61,7 +85,8 @@ const Dropdown: FC<IDropdownProps> = ({ content, selected, setSelected, socketRe
                   <Combobox.Option
                     key={idx}
                     className={({ active }) =>
-                      `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? "bg-blue-600 text-white" : "text-gray-900"
+                      `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                        active ? "bg-blue-600 text-white" : "text-gray-900"
                       }`
                     }
                     value={item}
@@ -69,15 +94,17 @@ const Dropdown: FC<IDropdownProps> = ({ content, selected, setSelected, socketRe
                     {({ selected, active }) => (
                       <>
                         <span
-                          className={`block truncate ${selected ? "font-medium" : "font-normal"
-                            }`}
+                          className={`block truncate ${
+                            selected ? "font-medium" : "font-normal"
+                          }`}
                         >
                           {item}
                         </span>
                         {selected ? (
                           <span
-                            className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active ? "text-white" : "text-blue-600"
-                              }`}
+                            className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
+                              active ? "text-white" : "text-blue-600"
+                            }`}
                           >
                             <MdCheck className="h-5 w-5" aria-hidden="true" />
                           </span>

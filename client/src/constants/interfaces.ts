@@ -32,6 +32,7 @@ export interface IDropdownProps {
     DefaultEventsMap,
     DefaultEventsMap
   > | null>;
+  auxiliaryRef: MutableRefObject<any>;
   roomId: string | undefined;
 }
 

@@ -63,24 +63,19 @@ io.on("connection", (socket) => {
   });
 
   socket.on(ACTIONS.CODE_CHANGE, ({ roomId, code }) => {
-    // console.log('receiving code!', code);
     socket.in(roomId).emit(ACTIONS.CODE_CHANGE, { code });
   });
 
-  socket.on(ACTIONS.SYNC_CODE, ({ socketId, code }) => {
-    // console.log('syncing code!', code);
-    // io.to(socketId).emit(ACTIONS.CODE_CHANGE, { code });
+  socket.on(ACTIONS.SYNC_CODE_AND_THEME, ({ socketId, code, newTheme }) => {
     socket.in(socketId).emit(ACTIONS.CODE_CHANGE, { code });
+    socket.in(socketId).emit(ACTIONS.THEME_CHANGE, { newTheme });
   });
 
   socket.on(ACTIONS.COMPILATION_STATUS_CHANGE, ({ roomId, compilationStatus }) => {
-    // show compilation modal
-    console.log('Compilation status: ', compilationStatus)
     io.to(roomId).emit(ACTIONS.COMPILATION_STATUS_CHANGE, { compilationStatus })
   })
 
   socket.on(ACTIONS.THEME_CHANGE, ({ roomId, newTheme }) => {
-    // console.log('New theme received! ', newTheme)
     io.to(roomId).emit(ACTIONS.THEME_CHANGE, { newTheme })
   })
 });

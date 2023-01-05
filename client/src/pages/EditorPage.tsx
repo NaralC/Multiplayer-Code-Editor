@@ -28,10 +28,11 @@ const EditorPage: FC = () => {
   const codeRef = useRef(null);
   const routerNavigator = useNavigate();
   const { roomId } = useParams(); // Pull room id from url
-
+  
   const [currentLanguage, setCurrentLanguage] = useState<string>(languages[0]);
   const [currentTheme, setCurrentTheme] = useState<string>('Okaidia');
-
+  const themeRef = useRef(currentTheme);
+  
   const socketRef = useRef<Socket<DefaultEventsMap, DefaultEventsMap> | null>(
     null
   );
@@ -64,9 +65,10 @@ const EditorPage: FC = () => {
             toast.success(`${nickname} just joined the room!`);
           }
           setClients(clients);
-          socketRef.current?.emit(ACTIONS.SYNC_CODE, {
+          socketRef.current?.emit(ACTIONS.SYNC_CODE_AND_THEME, {
             code: codeRef.current,
             socketId,
+            newTheme: themeRef.current,
           });
         }
       );
@@ -91,7 +93,6 @@ const EditorPage: FC = () => {
       socketRef.current.on(
         ACTIONS.THEME_CHANGE,
         ({ newTheme }) => {
-          // console.log(`ayo received theme here — ${newTheme}`);
           setCurrentTheme(newTheme);
         }
       );
@@ -205,19 +206,21 @@ const EditorPage: FC = () => {
         <div className="min-h-screen basis-4/5 bg-white text-4xl overflow-x-scroll">
           <div>Code Editor</div>
           <div className="flex flex-row m-6 gap-6 z-0">
-            <Dropdown
+            {/* <Dropdown
               content={languages}
               selected={currentLanguage}
               setSelected={setCurrentLanguage}
               roomId={roomId}
               socketRef={socketRef}
-            />
+              auxiliaryRef={}
+            /> */}
             <Dropdown
               content={Object.keys(themes)}
               selected={currentTheme}
               setSelected={setCurrentTheme}
               roomId={roomId}
               socketRef={socketRef}
+              auxiliaryRef={themeRef}
             />
             <AiFillPlayCircle
               className="hover:cursor-pointer"

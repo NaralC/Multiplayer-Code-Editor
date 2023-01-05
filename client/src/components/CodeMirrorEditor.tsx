@@ -18,7 +18,7 @@ const CodeMirrorEditor: FC<ICodeMirrorEditorProps> = ({ socketRef, roomId, onCod
     onCodeChange(newCode);
   }, []);
 
-  const effectRan = useRef<boolean>(false)
+  const effectRan = useRef(false)
   useEffect(() => {
       if (socketRef.current) {
         socketRef.current?.on(ACTIONS.CODE_CHANGE, ({ code }) => {
