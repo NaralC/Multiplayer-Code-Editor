@@ -21,8 +21,9 @@
 - Names that are too long messes up sidebar CSS
 
 ## Features To be Implemented
-- Language dropdown picker + Make current language sync with web sockets
+- ~~Language dropdown picker + Make current language sync with web sockets~~
 - ~~Editor Theme dropdown picker + Make current theme sync with web sockets~~
 - *Compilation with Judge0*
-- ~~Make compiltation status sync with web sockets~~ Implement cancellation with Axios if the compilation host quits
+- ~~Make compiltation status sync with web sockets~~ 
+- Implement cancellation with Axios if the compilation host quits
 - New joiners are not notified if code's being compiled at the time
