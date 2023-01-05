@@ -5,8 +5,7 @@ import CodeMirror from "@uiw/react-codemirror";
 import ACTIONS from "../constants/actions";
 import { ICodeMirrorEditorProps } from "../constants/interfaces";
 
-const CodeMirrorEditor: FC<ICodeMirrorEditorProps> = ({ socketRef, roomId, onCodeChange, currentTheme }) => {
-  const [code, setCode] = useState<string>('console.log("hello world")')
+const CodeMirrorEditor: FC<ICodeMirrorEditorProps> = ({ socketRef, roomId, onCodeChange, currentTheme, currentCode, setCurrentCode }) => {
 
   const onChange = useCallback((newCode: string, viewUpdate: ViewUpdate) => {
     socketRef.current?.emit(ACTIONS.CODE_CHANGE, {
@@ -21,7 +20,7 @@ const CodeMirrorEditor: FC<ICodeMirrorEditorProps> = ({ socketRef, roomId, onCod
       if (socketRef.current) {
         socketRef.current?.on(ACTIONS.CODE_CHANGE, ({ code }) => {
           if (code !== null) {
-            setCode(code);
+            setCurrentCode(code);
           }
         });
       }
@@ -31,10 +30,10 @@ const CodeMirrorEditor: FC<ICodeMirrorEditorProps> = ({ socketRef, roomId, onCod
       effectRan.current = true;
     }
   }, [socketRef.current]);
-
+  
   return (
       <CodeMirror
-        value={code}
+        value={currentCode}
         height="250px"
         extensions={[javascript({ jsx: true, typescript: true })]}
         onChange={onChange}

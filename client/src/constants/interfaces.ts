@@ -13,7 +13,9 @@ export interface ICodeMirrorEditorProps {
   > | null>;
   roomId: string | undefined;
   onCodeChange: (code: string) => void;
-  currentTheme: "light" | "dark" | "none" | undefined
+  currentTheme: "light" | "dark" | "none" | undefined;
+  currentCode: string;
+  setCurrentCode: Dispatch<SetStateAction<string>>;
 }
 
 export interface IDropdownProps {
@@ -27,6 +29,7 @@ export interface IDropdownProps {
   auxiliaryRef: MutableRefObject<string>;
   roomId: string | undefined;
   dropdownType: string;
+  setCurrentCode: Dispatch<SetStateAction<string>>;
 }
 
 export interface IModalProps {

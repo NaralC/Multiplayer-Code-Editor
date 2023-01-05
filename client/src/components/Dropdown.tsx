@@ -3,6 +3,7 @@ import { Combobox, Transition } from "@headlessui/react";
 import { MdOutlineArrowDropDownCircle, MdCheck } from "react-icons/md";
 import { IDropdownProps } from "../constants/interfaces";
 import ACTIONS from "../constants/actions";
+import defaultCode from "../constants/defaultCode";
 
 const Dropdown: FC<IDropdownProps> = ({
   content,
@@ -12,6 +13,7 @@ const Dropdown: FC<IDropdownProps> = ({
   roomId,
   auxiliaryRef,
   dropdownType,
+  setCurrentCode
 }) => {
   const [query, setQuery] = useState("");
 
@@ -65,8 +67,9 @@ const Dropdown: FC<IDropdownProps> = ({
               newTheme: newSelection,
             });
           }
-
+          
           else if (dropdownType === "Language") {
+            setCurrentCode(defaultCode[newSelection])
             socketRef.current?.emit(ACTIONS.LANGUAGE_CHANGE, {
               roomId,
               newLanguage: newSelection,

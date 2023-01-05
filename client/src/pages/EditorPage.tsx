@@ -22,6 +22,7 @@ import { copyToClipboard } from "../utility/helpers";
 import axios from "axios";
 import Modal from "../components/Modal";
 import { AiFillPlayCircle } from "react-icons/ai";
+import defaultCode from "../constants/defaultCode";
 
 const EditorPage: FC = () => {
   const [clients, setClients] = useState<IClientProps[]>([]);
@@ -31,6 +32,7 @@ const EditorPage: FC = () => {
   
   const [currentLanguage, setCurrentLanguage] = useState<string>(Object.keys(languages)[0]);
   const [currentTheme, setCurrentTheme] = useState<string>(Object.keys(themes)[0]);
+  const [currentCode, setCurrentCode] = useState<string>(defaultCode['JavaScript']);
   const themeRef = useRef(currentTheme);
   const languageRef = useRef(currentLanguage);
   
@@ -224,7 +226,8 @@ const EditorPage: FC = () => {
               roomId={roomId}
               socketRef={socketRef}
               auxiliaryRef={languageRef}
-              dropdownType={'Language'}
+              dropdownType={"Language"}
+              setCurrentCode={setCurrentCode}
             />
             <Dropdown
               content={Object.keys(themes)}
@@ -233,7 +236,8 @@ const EditorPage: FC = () => {
               roomId={roomId}
               socketRef={socketRef}
               auxiliaryRef={themeRef}
-              dropdownType={'Theme'}
+              dropdownType={"Theme"}
+              setCurrentCode={setCurrentCode}
             />
             <AiFillPlayCircle
               className="hover:cursor-pointer"
@@ -265,6 +269,8 @@ const EditorPage: FC = () => {
               codeRef.current = code;
             }}
             currentTheme={themes[currentTheme]}
+            currentCode={currentCode}
+            setCurrentCode={setCurrentCode}
           />
         </div>
       </div>
