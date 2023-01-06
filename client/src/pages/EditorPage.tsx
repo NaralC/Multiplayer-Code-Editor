@@ -23,6 +23,7 @@ import axios from "axios";
 import Modal from "../components/Modal";
 import { AiFillPlayCircle } from "react-icons/ai";
 import defaultCode from "../constants/defaultCode";
+import OutputBox from "../components/OutputBox";
 
 const EditorPage: FC = () => {
   const [clients, setClients] = useState<IClientProps[]>([]);
@@ -127,7 +128,7 @@ const EditorPage: FC = () => {
   }
 
   const [isCompiling, setIsCompiling] = useState(false);
-  const [result, setResult] = useState('');
+  const [result, setResult] = useState<any>(null);
   const handleCompilation = (): void => {
     const api = {
       host: import.meta.env.VITE_REACT_API_RAPID_API_HOST,
@@ -145,7 +146,7 @@ const EditorPage: FC = () => {
         "X-RapidAPI-Key": `${api.key}`,
         "X-RapidAPI-Host": `${api.host}`,
       },
-      data: `{"language_id":52,"source_code":"${window.btoa(
+      data: `{"language_id":${languages[currentLanguage][1]},"source_code":"${window.btoa(
         codeRef.current
       )}","stdin":"SnVkZ2Uw"}`,
     };
@@ -250,7 +251,7 @@ const EditorPage: FC = () => {
               setCurrentCode={setCurrentCode}
             />
             <AiFillPlayCircle
-              className="hover:cursor-pointer"
+              className="hover:cursor-pointer min-w-min"
               onClick={handleCompilation}
               // onClick={() => {
               //   // currently using a mock version since the code judge API only allows 50 calls/day
@@ -270,20 +271,20 @@ const EditorPage: FC = () => {
               //   }, 5000);
               // }}
             />
-            <div>{isCompiling === true ? "Not Compiling" : "Not Compiling"}</div>
+            <div>{isCompiling === true ? "Compiling" : "Not Compiling"}</div>
           </div>
           <CodeMirrorEditor
             socketRef={socketRef}
             roomId={roomId}
             onCodeChange={(code) => {
               codeRef.current = code;
-              console.log(codeRef.current);
+              // console.log(codeRef.current);
             }}
             currentTheme={themes[currentTheme]}
             currentCode={currentCode}
             setCurrentCode={setCurrentCode}
           />
-          <span>{JSON.stringify(result)}</span>
+          {result === null ? "no results" : <OutputBox description={result?.status?.description} memory={result?.memory} stdout={result?.stdout} time={result?.time}/>}
         </div>
       </div>
     </>

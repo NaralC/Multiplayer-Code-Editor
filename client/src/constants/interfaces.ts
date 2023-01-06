@@ -38,3 +38,10 @@ export interface IModalProps {
   title: string;
   description: string;
 }
+
+export interface IOutputBox {
+  time: string;
+  memory: string;
+  stdout: string;
+  description: string;
+}

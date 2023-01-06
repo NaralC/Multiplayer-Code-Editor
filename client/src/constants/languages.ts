@@ -6,16 +6,16 @@ import { rust, rustLanguage } from "@codemirror/lang-rust";
 import { java, javaLanguage } from "@codemirror/lang-java";
 
 const languages: {
-  [key: string]: any;
+  [key: string]: [any, number];
 } =
   {
-    'JavaScript': [javascript({ jsx: true, typescript: false })],
-    'TypeScript': [javascript({ jsx: true, typescript: true })],
-    'Python': [python()],
-    'C++': [cpp()],
-    'Java': [java()],
-    'PHP': [php()],
-    'Rust': [rust()],
+    'JavaScript': [[javascript({ jsx: true, typescript: false })], 63],
+    'TypeScript': [[javascript({ jsx: true, typescript: true })], 74],
+    'Python': [[python()], 71],
+    'C++': [[cpp()], 54],
+    'Java': [[java()], 62],
+    'PHP': [[php()], 68],
+    'Rust': [[rust()], 73],
     // 'JavaScript': [javascriptLanguage],
     // 'TypeScript': [typescriptLanguage],
     // 'Python': [pythonLanguage],
