@@ -235,7 +235,7 @@ const EditorPage: FC = () => {
             </button>
           </div>
         </div>
-        <div className="min-h-screen w-full bg-white text-4xl overflow-x-scroll overflow-y-scroll">
+        <div className="h-screen w-full bg-white text-4xl overflow-x-scroll overflow-y-scroll">
           <div className="flex flex-row mx-6 my-3 justify-between gap-5">
             <div className="flex flex-row w-32 sm:w-44 gap-5">
               <Dropdown
@@ -282,33 +282,37 @@ const EditorPage: FC = () => {
             />
           </div>
           <div className="flex flex-col justify-evenly">
-            <CodeMirrorEditor
-              socketRef={socketRef}
-              roomId={roomId}
-              onCodeChange={(code) => {
-                codeRef.current = code;
-                // console.log(codeRef.current);
-              }}
-              currentTheme={themes[currentTheme]}
-              currentCode={currentCode}
-              setCurrentCode={setCurrentCode}
-            />
-            {result !== null ? (
-              "no results"
-            ) : (
-              // <OutputBox
-              //   description={result?.status?.description}
-              //   memory={result?.memory}
-              //   stdout={result?.stdout}
-              //   time={result?.time}
-              // />
-              <OutputBox
-                description={"Compilation Successful!"}
-                memory={"10 Terabytes"}
-                stdout={"Hello World!"}
-                time={"20 Seconds"}
+            <div className="h-1/2">
+              <CodeMirrorEditor
+                socketRef={socketRef}
+                roomId={roomId}
+                onCodeChange={(code) => {
+                  codeRef.current = code;
+                  // console.log(codeRef.current);
+                }}
+                currentTheme={themes[currentTheme]}
+                currentCode={currentCode}
+                setCurrentCode={setCurrentCode}
               />
-            )}
+            </div>
+            <div className="h-1/2">
+              {result !== null ? (
+                "no results"
+              ) : (
+                // <OutputBox
+                //   description={result?.status?.description}
+                //   memory={result?.memory}
+                //   stdout={result?.stdout}
+                //   time={result?.time}
+                // />
+                <OutputBox
+                  description={"Compilation Successful!"}
+                  memory={"10 Terabytes"}
+                  stdout={"Hello World!"}
+                  time={"20 Seconds"}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>
