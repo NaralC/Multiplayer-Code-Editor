@@ -219,14 +219,14 @@ const EditorPage: FC = () => {
           <div>
             <button
               type="button"
-              className="w-full text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-xs md:text-lg px-5 py-2.5 text-center mr-2 mb-2"
+              className="w-full text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm md:text-lg px-5 py-2.5 text-center mr-2 mb-2"
               onClick={() => copyToClipboard(roomId)}
             >
               Copy Room ID
             </button>
             <button
               type="button"
-              className="w-full text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs md:text-lg px-5 py-2.5 text-center mr-2 mb-2"
+              className="w-full text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm md:text-lg px-5 py-2.5 text-center mr-2 mb-2"
               onClick={() => routerNavigator("/")}
             >
               Leave Room
@@ -234,8 +234,8 @@ const EditorPage: FC = () => {
           </div>
         </div>
         <div className="min-h-screen w-full bg-white text-4xl overflow-x-scroll">
-          <div>Code Editor</div>
-          <div className="flex flex-row m-6 gap-6 z-0">
+          <div className="flex flex-row mx-6 my-3 justify-between gap-5">
+            <div className="flex flex-row w-32 sm:w-44 gap-5">
             <Dropdown
               content={Object.keys(languages)}
               selected={currentLanguage}
@@ -256,8 +256,9 @@ const EditorPage: FC = () => {
               dropdownType={"Theme"}
               setCurrentCode={setCurrentCode}
             />
+            </div>
             <AiFillPlayCircle
-              className="hover:cursor-pointer min-w-min"
+              className="hover:cursor-pointer md:text-4xl my-auto hover:scale-125 min-w-min sm:mr-6 drop-shadow-md shadow-lg rounded-full"
               onClick={handleCompilation}
               // onClick={() => {
               //   // currently using a mock version since the code judge API only allows 50 calls/day
@@ -277,7 +278,6 @@ const EditorPage: FC = () => {
               //   }, 5000);
               // }}
             />
-            <div>{isCompiling === true ? "Compiling" : "Not Compiling"}</div>
           </div>
           <CodeMirrorEditor
             socketRef={socketRef}
