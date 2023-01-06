@@ -24,6 +24,7 @@ import Modal from "../components/Modal";
 import { AiFillPlayCircle } from "react-icons/ai";
 import defaultCode from "../constants/defaultCode";
 import OutputBox from "../components/OutputBox";
+import { GiLaptop } from "react-icons/gi";
 
 const EditorPage: FC = () => {
   const [clients, setClients] = useState<IClientProps[]>([]);
@@ -146,9 +147,9 @@ const EditorPage: FC = () => {
         "X-RapidAPI-Key": `${api.key}`,
         "X-RapidAPI-Host": `${api.host}`,
       },
-      data: `{"language_id":${languages[currentLanguage][1]},"source_code":"${window.btoa(
-        codeRef.current
-      )}","stdin":"SnVkZ2Uw"}`,
+      data: `{"language_id":${
+        languages[currentLanguage][1]
+      },"source_code":"${window.btoa(codeRef.current)}","stdin":"SnVkZ2Uw"}`,
     };
 
     if (isCompiling) return;
@@ -199,10 +200,13 @@ const EditorPage: FC = () => {
         description={"Please wait — we appreciate your patience!"}
       />
       <div className="page-background">
-        <div className="min-h-screen min-w-fit p-5 basis-1/5 bg-gray-300">
-          <div className="text-4xl flex flex-col justify-around">
-            Navbar
-            <div className="">
+        <div className="h-screen min-w-0 w-40 duration-300 md:w-64 p-5 bg-gray-300 text-4xl flex flex-col justify-between overflow-y-scroll">
+          <div>
+            <div className="flex flex-row justify-center text-5xl md:text-7xl">
+              <GiLaptop />
+            </div>
+            <p className="text-xl text-center md:text-3xl duration-300 font-mono">Code Crush</p>
+            <div className=''>
               {clients.map((client, idx) => (
                 <Client
                   key={idx}
@@ -211,23 +215,25 @@ const EditorPage: FC = () => {
                 />
               ))}
             </div>
+          </div>
+          <div>
             <button
               type="button"
-              className="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+              className="w-full text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-xs md:text-lg px-5 py-2.5 text-center mr-2 mb-2"
               onClick={() => copyToClipboard(roomId)}
             >
               Copy Room ID
             </button>
             <button
               type="button"
-              className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+              className="w-full text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs md:text-lg px-5 py-2.5 text-center mr-2 mb-2"
               onClick={() => routerNavigator("/")}
             >
               Leave Room
             </button>
           </div>
         </div>
-        <div className="min-h-screen basis-4/5 bg-white text-4xl overflow-x-scroll">
+        <div className="min-h-screen w-full bg-white text-4xl overflow-x-scroll">
           <div>Code Editor</div>
           <div className="flex flex-row m-6 gap-6 z-0">
             <Dropdown
@@ -284,7 +290,16 @@ const EditorPage: FC = () => {
             currentCode={currentCode}
             setCurrentCode={setCurrentCode}
           />
-          {result === null ? "no results" : <OutputBox description={result?.status?.description} memory={result?.memory} stdout={result?.stdout} time={result?.time}/>}
+          {result === null ? (
+            "no results"
+          ) : (
+            <OutputBox
+              description={result?.status?.description}
+              memory={result?.memory}
+              stdout={result?.stdout}
+              time={result?.time}
+            />
+          )}
         </div>
       </div>
     </>
