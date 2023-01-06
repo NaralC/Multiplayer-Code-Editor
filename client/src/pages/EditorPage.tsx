@@ -205,8 +205,10 @@ const EditorPage: FC = () => {
             <div className="flex flex-row justify-center text-5xl md:text-7xl">
               <GiLaptop />
             </div>
-            <p className="text-xl text-center md:text-3xl duration-300 font-mono">Code Crush</p>
-            <div className=''>
+            <p className="text-xl text-center md:text-3xl duration-300 font-mono">
+              Code Crush
+            </p>
+            <div className="">
               {clients.map((client, idx) => (
                 <Client
                   key={idx}
@@ -233,73 +235,81 @@ const EditorPage: FC = () => {
             </button>
           </div>
         </div>
-        <div className="min-h-screen w-full bg-white text-4xl overflow-x-scroll">
+        <div className="min-h-screen w-full bg-white text-4xl overflow-x-scroll overflow-y-scroll">
           <div className="flex flex-row mx-6 my-3 justify-between gap-5">
             <div className="flex flex-row w-32 sm:w-44 gap-5">
-            <Dropdown
-              content={Object.keys(languages)}
-              selected={currentLanguage}
-              setSelected={setCurrentLanguage}
-              roomId={roomId}
-              socketRef={socketRef}
-              auxiliaryRef={languageRef}
-              dropdownType={"Language"}
-              setCurrentCode={setCurrentCode}
-            />
-            <Dropdown
-              content={Object.keys(themes)}
-              selected={currentTheme}
-              setSelected={setCurrentTheme}
-              roomId={roomId}
-              socketRef={socketRef}
-              auxiliaryRef={themeRef}
-              dropdownType={"Theme"}
-              setCurrentCode={setCurrentCode}
-            />
+              <Dropdown
+                content={Object.keys(languages)}
+                selected={currentLanguage}
+                setSelected={setCurrentLanguage}
+                roomId={roomId}
+                socketRef={socketRef}
+                auxiliaryRef={languageRef}
+                dropdownType={"Language"}
+                setCurrentCode={setCurrentCode}
+              />
+              <Dropdown
+                content={Object.keys(themes)}
+                selected={currentTheme}
+                setSelected={setCurrentTheme}
+                roomId={roomId}
+                socketRef={socketRef}
+                auxiliaryRef={themeRef}
+                dropdownType={"Theme"}
+                setCurrentCode={setCurrentCode}
+              />
             </div>
             <AiFillPlayCircle
               className="hover:cursor-pointer md:text-4xl my-auto hover:scale-125 min-w-min sm:mr-6 drop-shadow-md shadow-lg rounded-full"
-              onClick={handleCompilation}
-              // onClick={() => {
-              //   // currently using a mock version since the code judge API only allows 50 calls/day
-              //   setIsCompiling(true);
-              //   socketRef.current?.emit(ACTIONS.COMPILATION_STATUS_CHANGE, {
-              //     roomId,
-              //     compilationStatus: true
-              //   });
+              // onClick={handleCompilation}
+              onClick={() => {
+                // currently using a mock version since the code judge API only allows 50 calls/day
+                setIsCompiling(true);
+                socketRef.current?.emit(ACTIONS.COMPILATION_STATUS_CHANGE, {
+                  roomId,
+                  compilationStatus: true,
+                });
 
-              //   setTimeout(() => {
-              //     setIsCompiling(false);
+                setTimeout(() => {
+                  setIsCompiling(false);
 
-              //     socketRef.current?.emit(ACTIONS.COMPILATION_STATUS_CHANGE, {
-              //       roomId,
-              //       compilationStatus: false
-              //     });
-              //   }, 5000);
-              // }}
+                  socketRef.current?.emit(ACTIONS.COMPILATION_STATUS_CHANGE, {
+                    roomId,
+                    compilationStatus: false,
+                  });
+                }, 5000);
+              }}
             />
           </div>
-          <CodeMirrorEditor
-            socketRef={socketRef}
-            roomId={roomId}
-            onCodeChange={(code) => {
-              codeRef.current = code;
-              // console.log(codeRef.current);
-            }}
-            currentTheme={themes[currentTheme]}
-            currentCode={currentCode}
-            setCurrentCode={setCurrentCode}
-          />
-          {result === null ? (
-            "no results"
-          ) : (
-            <OutputBox
-              description={result?.status?.description}
-              memory={result?.memory}
-              stdout={result?.stdout}
-              time={result?.time}
+          <div className="flex flex-col justify-evenly">
+            <CodeMirrorEditor
+              socketRef={socketRef}
+              roomId={roomId}
+              onCodeChange={(code) => {
+                codeRef.current = code;
+                // console.log(codeRef.current);
+              }}
+              currentTheme={themes[currentTheme]}
+              currentCode={currentCode}
+              setCurrentCode={setCurrentCode}
             />
-          )}
+            {result !== null ? (
+              "no results"
+            ) : (
+              // <OutputBox
+              //   description={result?.status?.description}
+              //   memory={result?.memory}
+              //   stdout={result?.stdout}
+              //   time={result?.time}
+              // />
+              <OutputBox
+                description={"Compilation Successful!"}
+                memory={"10 Terabytes"}
+                stdout={"Hello World!"}
+                time={"20 Seconds"}
+              />
+            )}
+          </div>
         </div>
       </div>
     </>

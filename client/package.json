@@ -26,6 +26,7 @@
     "@uiw/react-codemirror": "^4.19.4",
     "axios": "^1.2.2",
     "codemirror": "^6.0.1",
+    "daisyui": "^2.46.1",
     "dotenv": "^16.0.3",
     "monaco-editor": "^0.34.1",
     "prop-types": "^15.8.1",
