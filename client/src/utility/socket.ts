@@ -9,8 +9,8 @@ const initSocket = async (): Promise<Socket<DefaultEventsMap, DefaultEventsMap>>
         transports: ['websocket'],
     };
 
-    return io('http://localhost:8000/', options);
-    // return io(process.env.BACKEND_URL, options);
+    // return io('http://localhost:8000/', options);
+    return io(import.meta.env.VITE_REACT_API_BACKEND_URL, options);
 }
 
 export default initSocket;

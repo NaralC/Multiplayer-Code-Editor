@@ -26,16 +26,22 @@ import defaultCode from "../constants/defaultCode";
 
 const EditorPage: FC = () => {
   const [clients, setClients] = useState<IClientProps[]>([]);
-  const codeRef = useRef<string | null>(null);
   const routerNavigator = useNavigate();
   const { roomId } = useParams(); // Pull room id from url
-  
-  const [currentLanguage, setCurrentLanguage] = useState<string>(Object.keys(languages)[0]);
-  const [currentTheme, setCurrentTheme] = useState<string>(Object.keys(themes)[0]);
-  const [currentCode, setCurrentCode] = useState<string>(defaultCode['JavaScript']);
+
+  const [currentLanguage, setCurrentLanguage] = useState<string>(
+    Object.keys(languages)[0]
+  );
+  const [currentTheme, setCurrentTheme] = useState<string>(
+    Object.keys(themes)[0]
+  );
+  const [currentCode, setCurrentCode] = useState<string>(
+    defaultCode["JavaScript"]
+  );
+  const codeRef = useRef(currentCode);
   const themeRef = useRef(currentTheme);
   const languageRef = useRef(currentLanguage);
-  
+
   const socketRef = useRef<Socket<DefaultEventsMap, DefaultEventsMap> | null>(
     null
   );
@@ -72,7 +78,7 @@ const EditorPage: FC = () => {
             code: codeRef.current,
             socketId,
             newTheme: themeRef.current,
-            newLanguage: languageRef.current
+            newLanguage: languageRef.current,
           });
         }
       );
@@ -94,19 +100,13 @@ const EditorPage: FC = () => {
         }
       );
 
-      socketRef.current.on(
-        ACTIONS.THEME_CHANGE,
-        ({ newTheme }) => {
-          setCurrentTheme(newTheme);
-        }
-      );
+      socketRef.current.on(ACTIONS.THEME_CHANGE, ({ newTheme }) => {
+        setCurrentTheme(newTheme);
+      });
 
-      socketRef.current.on(
-        ACTIONS.LANGUAGE_CHANGE,
-        ({ newLanguage }) => {
-          setCurrentLanguage(newLanguage);
-        }
-      );
+      socketRef.current.on(ACTIONS.LANGUAGE_CHANGE, ({ newLanguage }) => {
+        setCurrentLanguage(newLanguage);
+      });
     };
     if (effectRan.current === false) init();
 
@@ -127,24 +127,34 @@ const EditorPage: FC = () => {
   }
 
   const [isCompiling, setIsCompiling] = useState(false);
+  const [result, setResult] = useState('');
   const handleCompilation = (): void => {
+    const api = {
+      host: import.meta.env.VITE_REACT_API_RAPID_API_HOST,
+      key: import.meta.env.VITE_REACT_API_RAPID_API_KEY,
+      url: import.meta.env.VITE_REACT_API_RAPID_API_URL,
+    };
+
+    const requestOptions = {
+      method: "POST",
+      url: `${api.url}`,
+      params: { base64_encoded: "true", fields: "*" },
+      headers: {
+        "content-type": "application/json",
+        "Content-Type": "application/json",
+        "X-RapidAPI-Key": `${api.key}`,
+        "X-RapidAPI-Host": `${api.host}`,
+      },
+      data: `{"language_id":52,"source_code":"${window.btoa(
+        codeRef.current
+      )}","stdin":"SnVkZ2Uw"}`,
+    };
+
     if (isCompiling) return;
 
     setIsCompiling(true);
     axios
-      .request({
-        method: "POST",
-        url: "https://judge0-ce.p.rapidapi.com/submissions",
-        params: { base64_encoded: "true", fields: "*" },
-        headers: {
-          "content-type": "application/json",
-          "Content-Type": "application/json",
-          "X-RapidAPI-Key":
-            "4af38674cfmshe4a55f5494063dep1de90djsn4445d89292fa",
-          "X-RapidAPI-Host": "judge0-ce.p.rapidapi.com",
-        },
-        data: '{"language_id":52,"source_code":"I2luY2x1ZGUgPHN0ZGlvLmg+CgppbnQgbWFpbih2b2lkKSB7CiAgY2hhciBuYW1lWzEwXTsKICBzY2FuZigiJXMiLCBuYW1lKTsKICBwcmludGYoImhlbGxvLCAlc1xuIiwgbmFtZSk7CiAgcmV0dXJuIDA7Cn0=","stdin":"SnVkZ2Uw"}',
-      })
+      .request(requestOptions)
       .then(async (response) => {
         console.log(response.data);
 
@@ -152,17 +162,17 @@ const EditorPage: FC = () => {
           axios
             .request({
               method: "GET",
-              url: `https://judge0-ce.p.rapidapi.com/submissions/${response.data?.token}`,
+              url: `${api.url}${response.data.token}`,
               params: { base64_encoded: "true", fields: "*" },
               headers: {
-                "X-RapidAPI-Key":
-                  "4af38674cfmshe4a55f5494063dep1de90djsn4445d89292fa",
-                "X-RapidAPI-Host": "judge0-ce.p.rapidapi.com",
+                "X-RapidAPI-Key": `${api.key}`,
+                "X-RapidAPI-Host": `${api.host}`,
               },
             })
             .then(({ data }) => {
               console.log(data);
               setIsCompiling(false);
+              setResult(data);
             });
         };
 
@@ -241,37 +251,39 @@ const EditorPage: FC = () => {
             />
             <AiFillPlayCircle
               className="hover:cursor-pointer"
-              // onClick={handleCompilation}
-              onClick={() => {
-                // currently using a mock version since the code judge API only allows 50 calls/day
-                setIsCompiling(true);
-                socketRef.current?.emit(ACTIONS.COMPILATION_STATUS_CHANGE, {
-                  roomId,
-                  compilationStatus: true
-                });
+              onClick={handleCompilation}
+              // onClick={() => {
+              //   // currently using a mock version since the code judge API only allows 50 calls/day
+              //   setIsCompiling(true);
+              //   socketRef.current?.emit(ACTIONS.COMPILATION_STATUS_CHANGE, {
+              //     roomId,
+              //     compilationStatus: true
+              //   });
 
-                setTimeout(() => {
-                  setIsCompiling(false);
+              //   setTimeout(() => {
+              //     setIsCompiling(false);
 
-                  socketRef.current?.emit(ACTIONS.COMPILATION_STATUS_CHANGE, {
-                    roomId,
-                    compilationStatus: false
-                  });
-                }, 5000);
-              }}
+              //     socketRef.current?.emit(ACTIONS.COMPILATION_STATUS_CHANGE, {
+              //       roomId,
+              //       compilationStatus: false
+              //     });
+              //   }, 5000);
+              // }}
             />
-            <div>{isCompiling === true ? "Compiling" : "Not Compiling"}</div>
+            <div>{isCompiling === true ? "Not Compiling" : "Not Compiling"}</div>
           </div>
           <CodeMirrorEditor
             socketRef={socketRef}
             roomId={roomId}
             onCodeChange={(code) => {
               codeRef.current = code;
+              console.log(codeRef.current);
             }}
             currentTheme={themes[currentTheme]}
             currentCode={currentCode}
             setCurrentCode={setCurrentCode}
           />
+          <span>{JSON.stringify(result)}</span>
         </div>
       </div>
     </>
