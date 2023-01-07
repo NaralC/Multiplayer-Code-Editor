@@ -32,7 +32,7 @@ const CodeMirrorEditor: FC<ICodeMirrorEditorProps> = ({ socketRef, roomId, onCod
   }, [socketRef.current]);
   
   return (
-    <div className='text-xs md:text-xl lg:text-2xl'>
+    <div className='text-xs md:text-xl lg:text-2xl rounded-md duration-150'>
       <CodeMirror
         value={currentCode}
         height="100%"

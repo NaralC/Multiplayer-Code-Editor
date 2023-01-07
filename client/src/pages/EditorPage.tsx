@@ -152,6 +152,16 @@ const EditorPage: FC = () => {
       },"source_code":"${window.btoa(codeRef.current)}","stdin":"SnVkZ2Uw"}`,
     };
 
+    const getOptions = {
+      method: "GET",
+      url: `${api.url}`,
+      params: { base64_encoded: "true", fields: "*" },
+      headers: {
+        "X-RapidAPI-Key": `${api.key}`,
+        "X-RapidAPI-Host": `${api.host}`,
+      },
+    }
+
     if (isCompiling) return;
 
     setIsCompiling(true);
@@ -159,18 +169,11 @@ const EditorPage: FC = () => {
       .request(requestOptions)
       .then(async (response) => {
         console.log(response.data);
-
+        const fetchOptions = {...getOptions, url: getOptions.url + response.data.token}
+        
         const checkOutcome = async () => {
           axios
-            .request({
-              method: "GET",
-              url: `${api.url}${response.data.token}`,
-              params: { base64_encoded: "true", fields: "*" },
-              headers: {
-                "X-RapidAPI-Key": `${api.key}`,
-                "X-RapidAPI-Host": `${api.host}`,
-              },
-            })
+            .request(fetchOptions)
             .then(({ data }) => {
               console.log(data);
               setIsCompiling(false);
@@ -261,24 +264,24 @@ const EditorPage: FC = () => {
             </div>
             <AiFillPlayCircle
               className="hover:cursor-pointer md:text-4xl my-auto hover:scale-125 min-w-min sm:mr-6 drop-shadow-md shadow-lg rounded-full"
-              // onClick={handleCompilation}
-              onClick={() => {
-                // currently using a mock version since the code judge API only allows 50 calls/day
-                setIsCompiling(true);
-                socketRef.current?.emit(ACTIONS.COMPILATION_STATUS_CHANGE, {
-                  roomId,
-                  compilationStatus: true,
-                });
+              onClick={handleCompilation}
+              // onClick={() => {
+              //   // currently using a mock version since the code judge API only allows 50 calls/day
+              //   setIsCompiling(true);
+              //   socketRef.current?.emit(ACTIONS.COMPILATION_STATUS_CHANGE, {
+              //     roomId,
+              //     compilationStatus: true,
+              //   });
 
-                setTimeout(() => {
-                  setIsCompiling(false);
+              //   setTimeout(() => {
+              //     setIsCompiling(false);
 
-                  socketRef.current?.emit(ACTIONS.COMPILATION_STATUS_CHANGE, {
-                    roomId,
-                    compilationStatus: false,
-                  });
-                }, 5000);
-              }}
+              //     socketRef.current?.emit(ACTIONS.COMPILATION_STATUS_CHANGE, {
+              //       roomId,
+              //       compilationStatus: false,
+              //     });
+              //   }, 5000);
+              // }}
             />
           </div>
           <div className="flex flex-col justify-evenly">
@@ -296,22 +299,18 @@ const EditorPage: FC = () => {
               />
             </div>
             <div className="h-1/2">
-              {result !== null ? (
-                "no results"
-              ) : (
-                // <OutputBox
-                //   description={result?.status?.description}
-                //   memory={result?.memory}
-                //   stdout={result?.stdout}
-                //   time={result?.time}
-                // />
                 <OutputBox
+                  description={result?.status?.description}
+                  memory={result?.memory}
+                  stdout={result?.stdout}
+                  time={result?.time}
+                />
+                {/* <OutputBox
                   description={"Compilation Successful!"}
                   memory={"10 Terabytes"}
                   stdout={"Hello World!"}
                   time={"20 Seconds"}
-                />
-              )}
+                /> */}
             </div>
           </div>
         </div>
