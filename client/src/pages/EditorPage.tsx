@@ -76,11 +76,13 @@ const EditorPage: FC = () => {
             toast.success(`${nickname} just joined the room!`);
           }
           setClients(clients);
-          socketRef.current?.emit(ACTIONS.SYNC_CODE_THEME_LANGUAGE, {
+          console.log(result);
+          socketRef.current?.emit(ACTIONS.JOIN_SYNC, {
             code: codeRef.current,
             socketId,
             newTheme: themeRef.current,
             newLanguage: languageRef.current,
+            newOutput: resultRef.current
           });
         }
       );
@@ -109,6 +111,10 @@ const EditorPage: FC = () => {
       socketRef.current.on(ACTIONS.LANGUAGE_CHANGE, ({ newLanguage }) => {
         setCurrentLanguage(newLanguage);
       });
+
+      socketRef.current.on(ACTIONS.OUTPUT_CHANGE, ({ newOutput }) => {
+        setResult(newOutput);
+      });
     };
     if (effectRan.current === false) init();
 
@@ -119,6 +125,7 @@ const EditorPage: FC = () => {
       socketRef.current?.off(ACTIONS.COMPILATION_STATUS_CHANGE);
       socketRef.current?.off(ACTIONS.THEME_CHANGE);
       socketRef.current?.off(ACTIONS.LANGUAGE_CHANGE);
+      socketRef.current?.off(ACTIONS.OUTPUT_CHANGE);
       effectRan.current = true;
     };
   }, []);
@@ -129,7 +136,8 @@ const EditorPage: FC = () => {
   }
 
   const [isCompiling, setIsCompiling] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<any>({});
+  const resultRef = useRef(result);
   const handleCompilation = (): void => {
     const api = {
       host: import.meta.env.VITE_REACT_API_RAPID_API_HOST,
@@ -160,25 +168,42 @@ const EditorPage: FC = () => {
         "X-RapidAPI-Key": `${api.key}`,
         "X-RapidAPI-Host": `${api.host}`,
       },
-    }
+    };
 
     if (isCompiling) return;
 
     setIsCompiling(true);
+
+    socketRef.current?.emit(ACTIONS.COMPILATION_STATUS_CHANGE, {
+      roomId,
+      compilationStatus: true,
+      newOutput: null,
+    });
     axios
       .request(requestOptions)
       .then(async (response) => {
-        console.log(response.data);
-        const fetchOptions = {...getOptions, url: getOptions.url + response.data.token}
-        
+        // console.log(response.data);
+        const fetchOptions = {
+          ...getOptions,
+          url: getOptions.url + response.data.token,
+        };
+
         const checkOutcome = async () => {
-          axios
-            .request(fetchOptions)
-            .then(({ data }) => {
-              console.log(data);
-              setIsCompiling(false);
-              setResult(data);
+          axios.request(fetchOptions).then(({ data }) => {
+            // console.log(data);
+            setIsCompiling(false);
+            setResult(data);
+
+            socketRef.current?.emit(ACTIONS.COMPILATION_STATUS_CHANGE, {
+              roomId,
+              compilationStatus: false,
             });
+
+            socketRef.current?.emit(ACTIONS.OUTPUT_CHANGE, {
+              roomId,
+              newOutput: data,
+            });
+          });
         };
 
         checkOutcome();
@@ -299,13 +324,13 @@ const EditorPage: FC = () => {
               />
             </div>
             <div className="h-1/2">
-                <OutputBox
-                  description={result?.status?.description}
-                  memory={result?.memory}
-                  stdout={result?.stdout}
-                  time={result?.time}
-                />
-                {/* <OutputBox
+              <OutputBox
+                description={result?.status?.description}
+                memory={result?.memory}
+                stdout={result?.stdout}
+                time={result?.time}
+              />
+              {/* <OutputBox
                   description={"Compilation Successful!"}
                   memory={"10 Terabytes"}
                   stdout={"Hello World!"}
