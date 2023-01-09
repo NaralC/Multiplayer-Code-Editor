@@ -24,6 +24,8 @@
 - ~~Editor Theme dropdown picker + Make current theme sync with web sockets~~
 - ~~Make compiltation status sync with web sockets~~ 
 - ~~*Compilation with Judge0* Late joiners don't receive output~~
+> Threw a few ref hooks at it, as the setter of state hooks are asynchronous(?)
+
 - Make the app not look ugly ⚠⚠⚠
 
 ## Nice-to-have Features
