@@ -4,6 +4,7 @@ import cors from "cors";
 import { Server } from "socket.io";
 import ACTIONS from "../client/src/constants/actions";
 import { on } from "events";
+import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
 
 const app = express();
 app.use(cors());
@@ -67,6 +68,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on(ACTIONS.JOIN_SYNC, ({ socketId, code, newTheme, newLanguage, newOutput }) => {
+    console.log('join sync', newOutput);
+    
     socket.in(socketId).emit(ACTIONS.CODE_CHANGE, { code });
     socket.in(socketId).emit(ACTIONS.THEME_CHANGE, { newTheme });
     socket.in(socketId).emit(ACTIONS.LANGUAGE_CHANGE, { newLanguage });
@@ -86,7 +89,6 @@ io.on("connection", (socket) => {
   })
 
   socket.on(ACTIONS.OUTPUT_CHANGE, ({ roomId, newOutput }) => {
-    console.log(newOutput);
     io.to(roomId).emit(ACTIONS.OUTPUT_CHANGE, { newOutput })
   })
 });

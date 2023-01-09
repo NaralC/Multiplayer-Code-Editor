@@ -23,7 +23,7 @@
 - ~~Language dropdown picker + Make current language sync with web sockets~~
 - ~~Editor Theme dropdown picker + Make current theme sync with web sockets~~
 - ~~Make compiltation status sync with web sockets~~ 
-- *Compilation with Judge0*
+- *Compilation with Judge0* Late joiners don't receive output
 - Make the app not look ugly
 
 ## Nice-to-have Features

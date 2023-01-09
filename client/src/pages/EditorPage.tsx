@@ -76,7 +76,7 @@ const EditorPage: FC = () => {
             toast.success(`${nickname} just joined the room!`);
           }
           setClients(clients);
-          console.log(result);
+          console.log('someone joined, sending results', resultRef.current);
           socketRef.current?.emit(ACTIONS.JOIN_SYNC, {
             code: codeRef.current,
             socketId,
@@ -114,6 +114,7 @@ const EditorPage: FC = () => {
 
       socketRef.current.on(ACTIONS.OUTPUT_CHANGE, ({ newOutput }) => {
         setResult(newOutput);
+        resultRef.current = newOutput;
       });
     };
     if (effectRan.current === false) init();
@@ -192,13 +193,15 @@ const EditorPage: FC = () => {
           axios.request(fetchOptions).then(({ data }) => {
             // console.log(data);
             setIsCompiling(false);
-            setResult(data);
+            setResult(data)
+            resultRef.current = data;
+            console.log(resultRef.current)
 
             socketRef.current?.emit(ACTIONS.COMPILATION_STATUS_CHANGE, {
               roomId,
               compilationStatus: false,
             });
-
+            
             socketRef.current?.emit(ACTIONS.OUTPUT_CHANGE, {
               roomId,
               newOutput: data,
@@ -217,7 +220,7 @@ const EditorPage: FC = () => {
 
         setIsCompiling(false);
       });
-  };
+  }
 
   return (
     <>
