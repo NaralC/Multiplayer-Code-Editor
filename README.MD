@@ -17,14 +17,14 @@
 - ~~Names that are too long messes up sidebar CSS~~
 > Solved with Tailwind's truncate property
 
-- Pressing more than 1 key simultaneously glitches out the code editor
+- Pressing more than 1 key simultaneously glitches out the code editor ⚠⚠⚠
 
 ## Features To be Implemented
 - ~~Language dropdown picker + Make current language sync with web sockets~~
 - ~~Editor Theme dropdown picker + Make current theme sync with web sockets~~
 - ~~Make compiltation status sync with web sockets~~ 
-- *Compilation with Judge0* Late joiners don't receive output
-- Make the app not look ugly
+- ~~*Compilation with Judge0* Late joiners don't receive output~~
+- Make the app not look ugly ⚠⚠⚠
 
 ## Nice-to-have Features
 - Implement cancellation with Axios if the compilation host quits
