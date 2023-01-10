@@ -76,13 +76,13 @@ const EditorPage: FC = () => {
             toast.success(`${nickname} just joined the room!`);
           }
           setClients(clients);
-          console.log('someone joined, sending results', resultRef.current);
+          console.log("someone joined, sending results", resultRef.current);
           socketRef.current?.emit(ACTIONS.JOIN_SYNC, {
             code: codeRef.current,
             socketId,
             newTheme: themeRef.current,
             newLanguage: languageRef.current,
-            newOutput: resultRef.current
+            newOutput: resultRef.current,
           });
         }
       );
@@ -193,15 +193,15 @@ const EditorPage: FC = () => {
           axios.request(fetchOptions).then(({ data }) => {
             // console.log(data);
             setIsCompiling(false);
-            setResult(data)
+            setResult(data);
             resultRef.current = data;
-            console.log(resultRef.current)
+            console.log(resultRef.current);
 
             socketRef.current?.emit(ACTIONS.COMPILATION_STATUS_CHANGE, {
               roomId,
               compilationStatus: false,
             });
-            
+
             socketRef.current?.emit(ACTIONS.OUTPUT_CHANGE, {
               roomId,
               newOutput: data,
@@ -220,7 +220,7 @@ const EditorPage: FC = () => {
 
         setIsCompiling(false);
       });
-  }
+  };
 
   return (
     <>
@@ -231,12 +231,12 @@ const EditorPage: FC = () => {
         description={"Please wait — we appreciate your patience!"}
       />
       <div className="page-background">
-        <div className="h-screen min-w-0 w-40 duration-300 md:w-64 p-5 bg-gray-300 text-4xl flex flex-col justify-between overflow-y-scroll">
+        <div className="h-screen min-w-0 w-40 duration-300 md:w-64 p-5 bg-slate-900 text-4xl flex flex-col justify-between overflow-y-auto">
           <div>
-            <div className="flex flex-row justify-center text-5xl md:text-7xl">
+            <div className="flex flex-row justify-center text-5xl text-white md:text-7xl">
               <GiLaptop />
             </div>
-            <p className="text-xl text-center md:text-3xl duration-300 font-mono">
+            <p className="text-xl text-center text-white md:text-3xl duration-300 font-mono">
               Code Crush
             </p>
             <div className="">
@@ -266,7 +266,7 @@ const EditorPage: FC = () => {
             </button>
           </div>
         </div>
-        <div className="h-screen w-full bg-white text-4xl overflow-y-scroll">
+        <div className="h-screen w-full text-4xl overflow-y-scroll bg-slate-900">
           <div className="flex flex-row mx-6 my-3 justify-between gap-5">
             <div className="flex flex-row w-32 sm:w-44 gap-5">
               <Dropdown
@@ -291,7 +291,7 @@ const EditorPage: FC = () => {
               />
             </div>
             <AiFillPlayCircle
-              className="hover:cursor-pointer md:text-4xl my-auto hover:scale-125 min-w-min sm:mr-6 drop-shadow-md shadow-lg rounded-full"
+              className="hover:cursor-pointer text-white duration-150 md:text-4xl my-auto hover:scale-125 min-w-min sm:mr-6 drop-shadow-md shadow-lg rounded-full"
               onClick={handleCompilation}
               // onClick={() => {
               //   // currently using a mock version since the code judge API only allows 50 calls/day
@@ -313,7 +313,7 @@ const EditorPage: FC = () => {
             />
           </div>
           <div className="flex flex-col justify-evenly">
-            <div className="">
+            <div className="bg-gray-800">
               <CodeMirrorEditor
                 socketRef={socketRef}
                 roomId={roomId}
@@ -327,18 +327,13 @@ const EditorPage: FC = () => {
               />
             </div>
             <div className="">
+              <div className="border-solid border-[2px] border-gray-600 m-3 bg-gray-600 rounded-full"></div>
               <OutputBox
                 description={result?.status?.description}
                 memory={result?.memory}
                 stdout={result?.stdout}
                 time={result?.time}
               />
-              {/* <OutputBox
-                  description={"Compilation Successful!"}
-                  memory={"10 Terabytes"}
-                  stdout={"Hello World!"}
-                  time={"20 Seconds"}
-                /> */}
             </div>
           </div>
         </div>
