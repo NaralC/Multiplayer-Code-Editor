@@ -266,7 +266,7 @@ const EditorPage: FC = () => {
             </button>
           </div>
         </div>
-        <div className="h-screen w-full bg-white text-4xl overflow-x-scroll overflow-y-scroll">
+        <div className="h-screen w-full bg-white text-4xl overflow-y-scroll">
           <div className="flex flex-row mx-6 my-3 justify-between gap-5">
             <div className="flex flex-row w-32 sm:w-44 gap-5">
               <Dropdown
@@ -313,7 +313,7 @@ const EditorPage: FC = () => {
             />
           </div>
           <div className="flex flex-col justify-evenly">
-            <div className="h-1/2">
+            <div className="">
               <CodeMirrorEditor
                 socketRef={socketRef}
                 roomId={roomId}
@@ -326,7 +326,7 @@ const EditorPage: FC = () => {
                 setCurrentCode={setCurrentCode}
               />
             </div>
-            <div className="h-1/2">
+            <div className="">
               <OutputBox
                 description={result?.status?.description}
                 memory={result?.memory}

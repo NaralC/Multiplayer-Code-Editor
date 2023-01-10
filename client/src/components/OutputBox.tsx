@@ -9,7 +9,7 @@ const OutputBox: FC<IOutputBox> = ({
 }) => {
 
   return (
-    <div className="mockup-code w-full h-56 bg-slate-800 rounded-md duration-150 text-white font-normal text-xs md:text-xl lg:text-2xl overflow-y-auto p-5">
+    <div className="mockup-code w-full bg-slate-800 rounded-md duration-150 text-white font-normal text-xs md:text-xl lg:text-2xl overflow-y-auto p-5 h-full">
       <div className="mb-5">
         <pre data-prefix="$">
           <code>Status: {description}</code>
