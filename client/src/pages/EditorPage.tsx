@@ -268,7 +268,7 @@ const EditorPage: FC = () => {
         </div>
         <div className="h-screen w-full text-4xl overflow-y-scroll bg-slate-900">
           <div className="flex flex-row mx-6 my-3 justify-between gap-5">
-            <div className="flex flex-row w-32 sm:w-44 gap-5">
+            <div className="flex flex-row w-28 sm:w-44 gap-5 duration-150">
               <Dropdown
                 content={Object.keys(languages)}
                 selected={currentLanguage}
