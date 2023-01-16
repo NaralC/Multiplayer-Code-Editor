@@ -29,16 +29,25 @@ const CodeMirrorEditor: FC<ICodeMirrorEditorProps> = ({ socketRef, roomId, onCod
       socketRef.current?.off(ACTIONS.CODE_CHANGE);
       effectRan.current = true;
     }
-  }, [socketRef.current]);
+  }, []);
   
   return (
     <div className='text-xs md:text-xl lg:text-2xl rounded-md duration-150 h-[70vh] overflow-y-auto overflow-x-auto'>
       <CodeMirror
         value={currentCode}
         height="100%"
-        extensions={[javascript({ jsx: true, typescript: true })]}
+        extensions={[javascript({ jsx: true, typescript: false })]}
         onChange={onChange}
         theme={currentTheme}
+        basicSetup={{
+          foldGutter: false,
+          dropCursor: false,
+          allowMultipleSelections: false,
+          indentOnInput: false,
+          autocompletion: true,
+          crosshairCursor: true,
+          highlightActiveLine: true
+        }}
       />
     </div>
   );

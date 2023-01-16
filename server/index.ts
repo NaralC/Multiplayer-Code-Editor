@@ -68,8 +68,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on(ACTIONS.JOIN_SYNC, ({ socketId, code, newTheme, newLanguage, newOutput }) => {
-    console.log('join sync', newOutput);
-    
     socket.in(socketId).emit(ACTIONS.CODE_CHANGE, { code });
     socket.in(socketId).emit(ACTIONS.THEME_CHANGE, { newTheme });
     socket.in(socketId).emit(ACTIONS.LANGUAGE_CHANGE, { newLanguage });
