@@ -24,6 +24,7 @@ import Modal from "../components/Modal";
 import { AiFillPlayCircle } from "react-icons/ai";
 import defaultCode from "../constants/defaultCode";
 import OutputBox from "../components/OutputBox";
+import { GiLaptop } from "react-icons/gi";
 
 const EditorPage: FC = () => {
   const [clients, setClients] = useState<IClientProps[]>([]);
@@ -75,11 +76,13 @@ const EditorPage: FC = () => {
             toast.success(`${nickname} just joined the room!`);
           }
           setClients(clients);
-          socketRef.current?.emit(ACTIONS.SYNC_CODE_THEME_LANGUAGE, {
+          console.log("someone joined, sending results", resultRef.current);
+          socketRef.current?.emit(ACTIONS.JOIN_SYNC, {
             code: codeRef.current,
             socketId,
             newTheme: themeRef.current,
             newLanguage: languageRef.current,
+            newOutput: resultRef.current,
           });
         }
       );
@@ -108,6 +111,11 @@ const EditorPage: FC = () => {
       socketRef.current.on(ACTIONS.LANGUAGE_CHANGE, ({ newLanguage }) => {
         setCurrentLanguage(newLanguage);
       });
+
+      socketRef.current.on(ACTIONS.OUTPUT_CHANGE, ({ newOutput }) => {
+        setResult(newOutput);
+        resultRef.current = newOutput;
+      });
     };
     if (effectRan.current === false) init();
 
@@ -118,6 +126,7 @@ const EditorPage: FC = () => {
       socketRef.current?.off(ACTIONS.COMPILATION_STATUS_CHANGE);
       socketRef.current?.off(ACTIONS.THEME_CHANGE);
       socketRef.current?.off(ACTIONS.LANGUAGE_CHANGE);
+      socketRef.current?.off(ACTIONS.OUTPUT_CHANGE);
       effectRan.current = true;
     };
   }, []);
@@ -128,7 +137,8 @@ const EditorPage: FC = () => {
   }
 
   const [isCompiling, setIsCompiling] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<any>({});
+  const resultRef = useRef(result);
   const handleCompilation = (): void => {
     const api = {
       host: import.meta.env.VITE_REACT_API_RAPID_API_HOST,
@@ -146,35 +156,57 @@ const EditorPage: FC = () => {
         "X-RapidAPI-Key": `${api.key}`,
         "X-RapidAPI-Host": `${api.host}`,
       },
-      data: `{"language_id":${languages[currentLanguage][1]},"source_code":"${window.btoa(
-        codeRef.current
-      )}","stdin":"SnVkZ2Uw"}`,
+      data: `{"language_id":${
+        languages[currentLanguage][1]
+      },"source_code":"${window.btoa(codeRef.current)}","stdin":"SnVkZ2Uw"}`,
+    };
+
+    const getOptions = {
+      method: "GET",
+      url: `${api.url}`,
+      params: { base64_encoded: "true", fields: "*" },
+      headers: {
+        "X-RapidAPI-Key": `${api.key}`,
+        "X-RapidAPI-Host": `${api.host}`,
+      },
     };
 
     if (isCompiling) return;
 
     setIsCompiling(true);
+
+    socketRef.current?.emit(ACTIONS.COMPILATION_STATUS_CHANGE, {
+      roomId,
+      compilationStatus: true,
+      newOutput: null,
+    });
     axios
       .request(requestOptions)
       .then(async (response) => {
-        console.log(response.data);
+        // console.log(response.data);
+        const fetchOptions = {
+          ...getOptions,
+          url: getOptions.url + response.data.token,
+        };
 
         const checkOutcome = async () => {
-          axios
-            .request({
-              method: "GET",
-              url: `${api.url}${response.data.token}`,
-              params: { base64_encoded: "true", fields: "*" },
-              headers: {
-                "X-RapidAPI-Key": `${api.key}`,
-                "X-RapidAPI-Host": `${api.host}`,
-              },
-            })
-            .then(({ data }) => {
-              console.log(data);
-              setIsCompiling(false);
-              setResult(data);
+          axios.request(fetchOptions).then(({ data }) => {
+            // console.log(data);
+            setIsCompiling(false);
+            setResult(data);
+            resultRef.current = data;
+            console.log(resultRef.current);
+
+            socketRef.current?.emit(ACTIONS.COMPILATION_STATUS_CHANGE, {
+              roomId,
+              compilationStatus: false,
             });
+
+            socketRef.current?.emit(ACTIONS.OUTPUT_CHANGE, {
+              roomId,
+              newOutput: data,
+            });
+          });
         };
 
         checkOutcome();
@@ -199,9 +231,14 @@ const EditorPage: FC = () => {
         description={"Please wait — we appreciate your patience!"}
       />
       <div className="page-background">
-        <div className="min-h-screen min-w-fit p-5 basis-1/5 bg-gray-300">
-          <div className="text-4xl flex flex-col justify-around">
-            Navbar
+        <div className="h-screen min-w-0 w-40 duration-300 md:w-64 p-5 bg-slate-900 text-4xl flex flex-col justify-between overflow-y-auto">
+          <div>
+            <div className="flex flex-row justify-center text-5xl text-white md:text-7xl">
+              <GiLaptop />
+            </div>
+            <p className="text-xl text-center text-white md:text-3xl duration-300 font-mono">
+              Code Crush
+            </p>
             <div className="">
               {clients.map((client, idx) => (
                 <Client
@@ -211,54 +248,57 @@ const EditorPage: FC = () => {
                 />
               ))}
             </div>
+          </div>
+          <div>
             <button
               type="button"
-              className="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+              className="w-full text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm md:text-lg px-5 py-2.5 text-center mr-2 mb-2"
               onClick={() => copyToClipboard(roomId)}
             >
               Copy Room ID
             </button>
             <button
               type="button"
-              className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+              className="w-full text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm md:text-lg px-5 py-2.5 text-center mr-2 mb-2"
               onClick={() => routerNavigator("/")}
             >
               Leave Room
             </button>
           </div>
         </div>
-        <div className="min-h-screen basis-4/5 bg-white text-4xl overflow-x-scroll">
-          <div>Code Editor</div>
-          <div className="flex flex-row m-6 gap-6 z-0">
-            <Dropdown
-              content={Object.keys(languages)}
-              selected={currentLanguage}
-              setSelected={setCurrentLanguage}
-              roomId={roomId}
-              socketRef={socketRef}
-              auxiliaryRef={languageRef}
-              dropdownType={"Language"}
-              setCurrentCode={setCurrentCode}
-            />
-            <Dropdown
-              content={Object.keys(themes)}
-              selected={currentTheme}
-              setSelected={setCurrentTheme}
-              roomId={roomId}
-              socketRef={socketRef}
-              auxiliaryRef={themeRef}
-              dropdownType={"Theme"}
-              setCurrentCode={setCurrentCode}
-            />
+        <div className="h-screen w-full text-4xl overflow-y-scroll bg-slate-900">
+          <div className="flex flex-row mx-6 my-3 justify-between gap-5">
+            <div className="flex flex-row w-28 sm:w-44 gap-5 duration-150">
+              <Dropdown
+                content={Object.keys(languages)}
+                selected={currentLanguage}
+                setSelected={setCurrentLanguage}
+                roomId={roomId}
+                socketRef={socketRef}
+                auxiliaryRef={languageRef}
+                dropdownType={"Language"}
+                setCurrentCode={setCurrentCode}
+              />
+              <Dropdown
+                content={Object.keys(themes)}
+                selected={currentTheme}
+                setSelected={setCurrentTheme}
+                roomId={roomId}
+                socketRef={socketRef}
+                auxiliaryRef={themeRef}
+                dropdownType={"Theme"}
+                setCurrentCode={setCurrentCode}
+              />
+            </div>
             <AiFillPlayCircle
-              className="hover:cursor-pointer min-w-min"
+              className="hover:cursor-pointer text-white duration-150 md:text-4xl my-auto hover:scale-125 min-w-min sm:mr-6 drop-shadow-md shadow-lg rounded-full"
               onClick={handleCompilation}
               // onClick={() => {
               //   // currently using a mock version since the code judge API only allows 50 calls/day
               //   setIsCompiling(true);
               //   socketRef.current?.emit(ACTIONS.COMPILATION_STATUS_CHANGE, {
               //     roomId,
-              //     compilationStatus: true
+              //     compilationStatus: true,
               //   });
 
               //   setTimeout(() => {
@@ -266,25 +306,36 @@ const EditorPage: FC = () => {
 
               //     socketRef.current?.emit(ACTIONS.COMPILATION_STATUS_CHANGE, {
               //       roomId,
-              //       compilationStatus: false
+              //       compilationStatus: false,
               //     });
               //   }, 5000);
               // }}
             />
-            <div>{isCompiling === true ? "Compiling" : "Not Compiling"}</div>
           </div>
-          <CodeMirrorEditor
-            socketRef={socketRef}
-            roomId={roomId}
-            onCodeChange={(code) => {
-              codeRef.current = code;
-              // console.log(codeRef.current);
-            }}
-            currentTheme={themes[currentTheme]}
-            currentCode={currentCode}
-            setCurrentCode={setCurrentCode}
-          />
-          {result === null ? "no results" : <OutputBox description={result?.status?.description} memory={result?.memory} stdout={result?.stdout} time={result?.time}/>}
+          <div className="flex flex-col justify-evenly">
+            <div className="bg-gray-800">
+              <CodeMirrorEditor
+                socketRef={socketRef}
+                roomId={roomId}
+                onCodeChange={(code) => {
+                  codeRef.current = code;
+                  // console.log(codeRef.current);
+                }}
+                currentTheme={themes[currentTheme]}
+                currentCode={currentCode}
+                setCurrentCode={setCurrentCode}
+              />
+            </div>
+            <div className="">
+              <div className="border-solid border-[2px] border-gray-600 m-3 bg-gray-600 rounded-full"></div>
+              <OutputBox
+                description={result?.status?.description}
+                memory={result?.memory}
+                stdout={result?.stdout}
+                time={result?.time}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </>

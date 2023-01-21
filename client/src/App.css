@@ -4,6 +4,6 @@
 
 @layer components {
   .page-background {
-    @apply w-screen min-h-screen bg-gray-600 flex flex-row justify-center items-center transition-all delay-75;
+    @apply w-screen min-h-screen bg-slate-900 flex flex-row justify-center items-center transition-all delay-150;
   }
 }

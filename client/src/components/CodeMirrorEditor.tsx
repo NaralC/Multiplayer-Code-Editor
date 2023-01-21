@@ -32,13 +32,15 @@ const CodeMirrorEditor: FC<ICodeMirrorEditorProps> = ({ socketRef, roomId, onCod
   }, [socketRef.current]);
   
   return (
+    <div className='text-xs md:text-xl lg:text-2xl rounded-md duration-150 h-[70vh] overflow-y-auto overflow-x-auto'>
       <CodeMirror
         value={currentCode}
-        height="250px"
+        height="100%"
         extensions={[javascript({ jsx: true, typescript: true })]}
         onChange={onChange}
         theme={currentTheme}
       />
+    </div>
   );
 };
 
