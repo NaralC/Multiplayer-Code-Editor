@@ -7,7 +7,7 @@ import { on } from "events";
 import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
 
 const app = express();
-app.use(cors());
+// app.use(cors());
 const PORT = 8000;
 
 app.get("/", (req, res) => {
@@ -37,6 +37,7 @@ const getAllConnectedClients = (roomId: string) => {
 };
 
 io.on("connection", (socket) => {
+  console.log('socket connected', socket.id)
   socket.on(ACTIONS.JOIN, ({ roomId, nickname }) => {
     userSocketMap[socket.id] = nickname;
     socket.join(roomId);

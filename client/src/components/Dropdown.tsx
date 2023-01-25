@@ -48,7 +48,8 @@ const Dropdown: FC<IDropdownProps> = ({
     }
 
     return () => {
-      socketRef.current?.off(ACTIONS.CODE_CHANGE);
+      socketRef.current?.off(ACTIONS.THEME_CHANGE);
+      socketRef.current?.off(ACTIONS.LANGUAGE_CHANGE);
       effectRan.current = true;
     };
   }, [socketRef.current]);

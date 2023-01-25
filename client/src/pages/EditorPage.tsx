@@ -76,7 +76,7 @@ const EditorPage: FC = () => {
             toast.success(`${nickname} just joined the room!`);
           }
           setClients(clients);
-          console.log("someone joined, sending results", resultRef.current);
+          // console.log("someone joined, sending results", resultRef.current);
           socketRef.current?.emit(ACTIONS.JOIN_SYNC, {
             code: codeRef.current,
             socketId,
@@ -122,6 +122,7 @@ const EditorPage: FC = () => {
     return () => {
       socketRef.current?.disconnect();
       socketRef.current?.off(ACTIONS.JOINED);
+      socketRef.current?.off(ACTIONS.CODE_CHANGE);
       socketRef.current?.off(ACTIONS.DISCONNECTED);
       socketRef.current?.off(ACTIONS.COMPILATION_STATUS_CHANGE);
       socketRef.current?.off(ACTIONS.THEME_CHANGE);
@@ -191,7 +192,6 @@ const EditorPage: FC = () => {
 
         const checkOutcome = async () => {
           axios.request(fetchOptions).then(({ data }) => {
-            // console.log(data);
             setIsCompiling(false);
             setResult(data);
             resultRef.current = data;
@@ -293,23 +293,6 @@ const EditorPage: FC = () => {
             <AiFillPlayCircle
               className="hover:cursor-pointer text-white duration-150 md:text-4xl my-auto hover:scale-125 min-w-min sm:mr-6 drop-shadow-md shadow-lg rounded-full"
               onClick={handleCompilation}
-              // onClick={() => {
-              //   // currently using a mock version since the code judge API only allows 50 calls/day
-              //   setIsCompiling(true);
-              //   socketRef.current?.emit(ACTIONS.COMPILATION_STATUS_CHANGE, {
-              //     roomId,
-              //     compilationStatus: true,
-              //   });
-
-              //   setTimeout(() => {
-              //     setIsCompiling(false);
-
-              //     socketRef.current?.emit(ACTIONS.COMPILATION_STATUS_CHANGE, {
-              //       roomId,
-              //       compilationStatus: false,
-              //     });
-              //   }, 5000);
-              // }}
             />
           </div>
           <div className="flex flex-col justify-evenly">
@@ -319,7 +302,6 @@ const EditorPage: FC = () => {
                 roomId={roomId}
                 onCodeChange={(code) => {
                   codeRef.current = code;
-                  // console.log(codeRef.current);
                 }}
                 currentTheme={themes[currentTheme]}
                 currentCode={currentCode}

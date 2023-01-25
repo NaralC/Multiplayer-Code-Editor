@@ -39,14 +39,12 @@ const HomePage: FC = () => {
       return;
     }
 
-    setTimeout(() => {
-      // Send data to the next page
-      navigate(`/editor/${roomId}`, {
-        state: {
-          nickname: nickname,
-        },
-      });
-    }, 1000);
+    // Send data to the next page
+    navigate(`/editor/${roomId}`, {
+      state: {
+        nickname: nickname,
+      },
+    });
   };
 
   // For initial page load animation
