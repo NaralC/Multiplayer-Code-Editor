@@ -6,7 +6,7 @@ import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename="https://github.com/NaralC/Multiplayer-Code-Editor">
       <App />
     </BrowserRouter>
   </React.StrictMode>
